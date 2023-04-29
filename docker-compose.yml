@@ -1,0 +1,18 @@
+# docker run --name manga-toread-api-typescript-mongo \
+# -e MONGODB_USERNAME=docker \
+# -e MONGODB_PASSWORD=docker \
+# -e MONGODB_DATABASE=manga_toread_api \
+# -e MONGODB_ROOT_PASSWORD=docker \
+# -p 27017:27017 \
+# bitnami/mongodb:latest
+
+version: '3.7'
+services:
+  mongodb_container:
+    image: prismagraphql/mongo-single-replica:4.4.3-bionic
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: prisma
+      INIT_WAIT_SEC: 3
+    ports:
+      - 27017:27017

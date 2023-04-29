@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Manhwas {
+  id                    String   @id @default(uuid()) @map("_id")
+  name                  String
+  last_episode_released Int
+  last_episode_notified Int
+  available_read_url    String[]
+  manhwa_thumb          String
+  url_crawler           String?
+  users_to_notify       String[]
+
+  @@map("manhwas")
+}
+
+model Users {
+  id            String    @id @default(uuid()) @map("_id")
+  name          String?
+  username      String    @unique
+  password_hash String
+  email         String    @unique
+  role          String    @default("user")
+  created_at    DateTime  @default(now())
+  updated_at    DateTime?
+
+  @@map("users")
+}
+
+model UserManhwa {
+  id              String             @id @default(uuid()) @map("_id")
+  user_id         String
+  manhwas         ManhwaUserManhwa[]
+  telegram_active Boolean
+  telegram_id     String?
+
+  @@map("user_manhwa")
+}
+
+type ManhwaUserManhwa {
+  manhwa_id            String
+  manhwa_position      Int
+  last_episode_read    Int
+  read_url             String[]
+  notify_telegram      Boolean
+  notification_website Boolean
+}
