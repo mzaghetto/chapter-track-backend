@@ -1,5 +1,5 @@
 import { expect, describe, it, beforeEach } from 'vitest'
-import { InMemoryManhwasRepository } from '@/repositories/in-memory/in-memory-manhwa-repository'
+import { InMemoryManhwasRepository } from '@/repositories/in-memory/in-memory-manhwas-repository'
 import { RegisterManhwaUseCase } from './register-manhwa'
 import { ManhwaAlreadyExistsError } from './errors/manhwa-already-exists-error'
 

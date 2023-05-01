@@ -1,6 +1,6 @@
 import { Manhwas } from '@prisma/client'
 import { randomUUID } from 'crypto'
-import { ManhwasRepository } from '../manhwa-repository'
+import { ManhwasRepository } from '../manhwas-repository'
 
 export class InMemoryManhwasRepository implements ManhwasRepository {
   public items: Manhwas[] = []
