@@ -1,5 +1,5 @@
 import { Manhwas } from '@prisma/client'
-import { ManhwasRepository } from '@/repositories/manhwa-repository'
+import { ManhwasRepository } from '@/repositories/manhwas-repository'
 import { ManhwaAlreadyExistsError } from './errors/manhwa-already-exists-error'
 
 interface RegisterManhwaUseCaseRequest {
