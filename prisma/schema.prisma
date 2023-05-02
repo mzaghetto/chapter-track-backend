@@ -37,10 +37,10 @@ model Users {
 }
 
 model UserManhwa {
-  id              String            @id @default(uuid()) @map("_id")
+  id              String             @id @default(uuid()) @map("_id")
   user_id         String
-  manhwas         ManhwaUserManhwa?
-  telegram_active Boolean           @default(false)
+  manhwas         ManhwaUserManhwa[]
+  telegram_active Boolean            @default(false)
   telegram_id     String?
 
   @@map("user_manhwa")

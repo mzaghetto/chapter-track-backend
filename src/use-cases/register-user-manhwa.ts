@@ -5,7 +5,7 @@ import { ResourceNotFoundError } from './errors/resource-not-found'
 
 interface RegisterUserManhwaUseCaseRequest {
   user_id: string
-  manhwas: null
+  manhwas: []
   telegram_id: string | null
 }
 

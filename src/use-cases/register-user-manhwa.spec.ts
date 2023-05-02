@@ -31,7 +31,7 @@ describe('Register User Manhwa Use Case', () => {
 
     const { userManhwa } = await sut.execute({
       user_id: user.id,
-      manhwas: null,
+      manhwas: [],
       telegram_id: null,
     })
 
@@ -42,7 +42,7 @@ describe('Register User Manhwa Use Case', () => {
     await expect(() =>
       sut.execute({
         user_id: '123',
-        manhwas: null,
+        manhwas: [],
         telegram_id: null,
       }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError)
