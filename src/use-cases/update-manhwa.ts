@@ -1,6 +1,6 @@
 import { Manhwas, Prisma } from '@prisma/client'
 import { ResourceNotFoundError } from './errors/resource-not-found'
-import { ManhwasRepository } from '@/repositories/manhwa-repository'
+import { ManhwasRepository } from '@/repositories/manhwas-repository'
 import { ManhwaAlreadyExistsError } from './errors/manhwa-already-exists-error'
 
 interface UpdateManhwaUseCaseRequest {

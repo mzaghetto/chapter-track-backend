@@ -9,7 +9,7 @@ export class InMemoryUserManhwaRepository implements UserManhwaRepository {
   async create(data: UserManhwa): Promise<UserManhwa> {
     const userManhwa = {
       user_id: data.user_id,
-      id: randomUUID(),
+      id: data.id ?? randomUUID(),
       manhwas: [],
       telegram_active: false,
       telegram_id: null,

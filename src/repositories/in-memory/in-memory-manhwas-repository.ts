@@ -7,7 +7,7 @@ export class InMemoryManhwasRepository implements ManhwasRepository {
 
   async create(data: Manhwas): Promise<Manhwas> {
     const manhwa = {
-      id: randomUUID(),
+      id: data.id ?? randomUUID(),
       name: data.name,
       last_episode_released: data.last_episode_released,
       last_episode_notified: data.last_episode_notified,

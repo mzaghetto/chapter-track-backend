@@ -2,7 +2,6 @@ import { expect, describe, it, beforeEach } from 'vitest'
 import { InMemoryUserManhwaRepository } from '@/repositories/in-memory/in-memory-user-manhwa-repository'
 import { RegisterUserManhwaUseCase } from './register-user-manhwa'
 import { InMemoryUsersRepository } from '@/repositories/in-memory/in-memory-users-repository'
-import { randomUUID } from 'crypto'
 import { hash } from 'bcryptjs'
 import { ResourceNotFoundError } from './errors/resource-not-found'
 
@@ -11,15 +10,13 @@ let userManhwaRepository: InMemoryUserManhwaRepository
 let sut: RegisterUserManhwaUseCase
 
 describe('Register User Manhwa Use Case', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     usersRepository = new InMemoryUsersRepository()
     userManhwaRepository = new InMemoryUserManhwaRepository()
     sut = new RegisterUserManhwaUseCase(userManhwaRepository, usersRepository)
-  })
 
-  it('should be able to register a user manhwa', async () => {
-    const user = await usersRepository.create({
-      id: randomUUID(),
+    await usersRepository.create({
+      id: 'user-01',
       name: 'Jhon Doe',
       username: 'jhondoe',
       email: 'johndoe@example.com',
@@ -28,14 +25,16 @@ describe('Register User Manhwa Use Case', () => {
       created_at: new Date(),
       updated_at: null,
     })
+  })
 
+  it('should be able to register a user manhwa', async () => {
     const { userManhwa } = await sut.execute({
-      user_id: user.id,
+      user_id: 'user-01',
       manhwas: [],
       telegram_id: null,
     })
 
-    expect(userManhwa.user_id).toEqual(user.id)
+    expect(userManhwa.user_id).toEqual('user-01')
   })
 
   it('should not be able to register a user manhwa for a user if a valid user is not assigned.', async () => {
