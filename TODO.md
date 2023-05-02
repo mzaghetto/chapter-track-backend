@@ -14,7 +14,7 @@
 - [x] It should be possible to update the last notified chapter from a manhwa;
 
 #### User_manhwa
-- [ ] It should be possible to add a new manhwa to user profile;
+- [x] It should be possible to add a new manhwa to user profile;
 - [ ] It should be possible to get all manhwas [by profile];
 - [ ] It should be possible to verify the unread manhwas [by profile];
 - [ ] It should be possible to remove a manhwa to user profile;

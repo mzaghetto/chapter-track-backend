@@ -32,6 +32,16 @@ export class InMemoryManhwasRepository implements ManhwasRepository {
     return Promise.resolve(manhwa)
   }
 
+  findByID(manhwaID: string): Promise<Manhwas | null> {
+    const indexOfManhwa = this.items.findIndex((item) => item.id === manhwaID)
+
+    if (indexOfManhwa === -1) {
+      return Promise.resolve(null)
+    }
+
+    return Promise.resolve(this.items[indexOfManhwa])
+  }
+
   async findByIDAndUpdate(
     manhwaID: string,
     data: Manhwas,

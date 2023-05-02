@@ -59,7 +59,7 @@ The collections mapped to refactor
 
 ### User_manhwa:
   - user_id: String `[note: To find the user's information in the Users collection]`
-  - manhwas: Object
+  - manhwas: Array of Obj
     - manhwa_id: String `[note: To find the manhwa's information in the Manhwas collection]`
     - manhwa_position: Integer
     - last_episode_read: Integer
