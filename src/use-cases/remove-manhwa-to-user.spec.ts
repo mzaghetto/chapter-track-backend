@@ -11,7 +11,7 @@ let userManhwaRepository: InMemoryUserManhwaRepository
 let manhwasRepository: InMemoryManhwasRepository
 let sut: RemoveManhwaToUserManhwaUseCase
 
-describe('Register Manhwa to User Manhwa Use Case', () => {
+describe('Remove Manhwa from User Manhwa Use Case', () => {
   beforeEach(async () => {
     usersRepository = new InMemoryUsersRepository()
     userManhwaRepository = new InMemoryUserManhwaRepository()
