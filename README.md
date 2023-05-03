@@ -1,4 +1,4 @@
-## Which episode were you in your manga reading?
+## Which episode were you in your manhwa reading?
 Now, you can save your manhwa readings
 
 #### Tech Stack
@@ -29,6 +29,7 @@ npm run start:dev
 #### Tests:
 ```
 npm run test
+npm run test:coverage
 ```
 
 ## MongoDB Collections
