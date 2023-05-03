@@ -33,6 +33,26 @@ export class InMemoryUserManhwaRepository implements UserManhwaRepository {
     return Promise.resolve(userIDManhwa)
   }
 
+  removeManhwa(userID: string, manhwaID: string): Promise<UserManhwa> {
+    const userIDManhwa = this.items.find((item) => item.user_id === userID)
+
+    if (!userIDManhwa) {
+      throw new ResourceNotFoundError()
+    }
+
+    const manhwaIDIndex = userIDManhwa.manhwas.findIndex(
+      (item) => item.manhwa_id === manhwaID,
+    )
+
+    if (manhwaIDIndex === -1) {
+      throw new ResourceNotFoundError()
+    }
+
+    userIDManhwa.manhwas.splice(manhwaIDIndex, 1)
+
+    return Promise.resolve(userIDManhwa)
+  }
+
   getManhwasByProfile(userID: string): Promise<UserManhwa> {
     const userIDManhwa = this.items.find((item) => item.user_id === userID)
 
