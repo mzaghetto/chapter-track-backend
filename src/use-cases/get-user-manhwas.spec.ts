@@ -65,19 +65,12 @@ describe('Get User Manhwas Use Case', () => {
   })
 
   it('should be able to get all manhwas of user profile', async () => {
-    await sut.execute({
+    const { userManhwa } = await sut.execute({
       userID: 'user-01',
       page: 1,
     })
 
-    expect.objectContaining({ manhwa_id: 'manhwa-1' })
-    expect.objectContaining({ manhwa_position: 0 })
-    expect.objectContaining({ last_episode_read: 0 })
-    expect.objectContaining({
-      read_url: ['https://www.mangageko.com/manga/manga-1773/'],
-    })
-    expect.objectContaining({ notify_telegram: false })
-    expect.objectContaining({ notification_website: true })
+    expect(userManhwa.manhwas.length).toEqual(20)
   })
 
   it('should be able to get page 2 manhwas of user profile', async () => {
