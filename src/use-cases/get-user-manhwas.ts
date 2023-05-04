@@ -4,6 +4,7 @@ import { UserManhwaRepository } from '@/repositories/user-manhwa-repository'
 
 interface GetUserManhwasCaseRequest {
   userID: string
+  page: number
 }
 
 interface GetUserManhwasCaseResponse {
@@ -15,9 +16,11 @@ export class GetUserManhwasUseCase {
 
   async execute({
     userID,
+    page,
   }: GetUserManhwasCaseRequest): Promise<GetUserManhwasCaseResponse> {
     const userManhwa = await this.userManhwaRepository.getManhwasByProfile(
       userID,
+      page,
     )
 
     if (!userManhwa) {

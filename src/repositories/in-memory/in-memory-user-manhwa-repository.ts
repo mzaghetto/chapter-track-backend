@@ -53,12 +53,17 @@ export class InMemoryUserManhwaRepository implements UserManhwaRepository {
     return Promise.resolve(userIDManhwa)
   }
 
-  getManhwasByProfile(userID: string): Promise<UserManhwa> {
+  getManhwasByProfile(userID: string, page: number): Promise<UserManhwa> {
     const userIDManhwa = this.items.find((item) => item.user_id === userID)
 
     if (!userIDManhwa) {
       throw new ResourceNotFoundError()
     }
+
+    userIDManhwa.manhwas = userIDManhwa.manhwas.slice(
+      (page - 1) * 20,
+      page * 20,
+    )
 
     return Promise.resolve(userIDManhwa)
   }

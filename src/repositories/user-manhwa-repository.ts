@@ -7,7 +7,7 @@ export interface UserManhwaRepository {
     data: Prisma.ManhwaUserManhwaCreateInput,
   ): Promise<UserManhwa>
   removeManhwa(userID: string, manhwaID: string): Promise<UserManhwa>
-  getManhwasByProfile(userID: string): Promise<UserManhwa>
+  getManhwasByProfile(userID: string, page: number): Promise<UserManhwa>
   findByManhwaID(
     userID: string,
     manhwaID: string,
