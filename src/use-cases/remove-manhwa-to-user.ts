@@ -41,6 +41,10 @@ export class RemoveManhwaToUserManhwaUseCase {
       manhwaID,
     )
 
+    if (!userManhwa) {
+      throw new ResourceNotFoundError()
+    }
+
     return {
       userManhwa,
     }

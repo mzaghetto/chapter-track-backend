@@ -23,6 +23,10 @@ export class OrganizeManhwasUseCase {
   }: OrganizeManhwasCaseRequest): Promise<OrganizeManhwasCaseResponse> {
     const getAllManhwas = await this.userManhwaRepository.getAllManhwas(userID)
 
+    if (getAllManhwas === null) {
+      throw new ResourceNotFoundError()
+    }
+
     for (const manhwa of order) {
       const manhwaExists = getAllManhwas.some(
         (m) => m.manhwa_id === manhwa.manhwa_id,

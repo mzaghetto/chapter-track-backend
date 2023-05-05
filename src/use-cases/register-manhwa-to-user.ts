@@ -44,14 +44,22 @@ export class AddManhwaToUserManhwaUseCase {
       throw new ManhwaAlreadyExistsError()
     }
 
-    manhwas.manhwa_position = await this.userManhwaRepository.getQtyManhwas(
-      user_id,
-    )
+    const getQtyManhwas = await this.userManhwaRepository.getQtyManhwas(user_id)
+
+    if (getQtyManhwas === null) {
+      throw new ResourceNotFoundError()
+    }
+
+    manhwas.manhwa_position = getQtyManhwas
 
     const userManhwa = await this.userManhwaRepository.addManhwa(
       user_id,
       manhwas,
     )
+
+    if (!userManhwa) {
+      throw new ResourceNotFoundError()
+    }
 
     return {
       userManhwa,

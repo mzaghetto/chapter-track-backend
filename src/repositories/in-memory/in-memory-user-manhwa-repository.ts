@@ -1,7 +1,6 @@
 import { ManhwaUserManhwa, UserManhwa } from '@prisma/client'
 import { randomUUID } from 'crypto'
 import { UserManhwaRepository } from '../user-manhwa-repository'
-import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found'
 import { ManhwaAlreadyExistsError } from '@/use-cases/errors/manhwa-already-exists-error'
 
 export class InMemoryUserManhwaRepository implements UserManhwaRepository {
@@ -21,11 +20,14 @@ export class InMemoryUserManhwaRepository implements UserManhwaRepository {
     return Promise.resolve(userManhwa)
   }
 
-  async addManhwa(userID: string, data: ManhwaUserManhwa): Promise<UserManhwa> {
+  async addManhwa(
+    userID: string,
+    data: ManhwaUserManhwa,
+  ): Promise<UserManhwa | null> {
     const userIDManhwa = this.items.find((item) => item.user_id === userID)
 
     if (!userIDManhwa) {
-      throw new ResourceNotFoundError()
+      return Promise.resolve(null)
     }
 
     userIDManhwa.manhwas.push(data)
@@ -33,11 +35,11 @@ export class InMemoryUserManhwaRepository implements UserManhwaRepository {
     return Promise.resolve(userIDManhwa)
   }
 
-  removeManhwa(userID: string, manhwaID: string): Promise<UserManhwa> {
+  removeManhwa(userID: string, manhwaID: string): Promise<UserManhwa | null> {
     const userIDManhwa = this.items.find((item) => item.user_id === userID)
 
     if (!userIDManhwa) {
-      throw new ResourceNotFoundError()
+      return Promise.resolve(null)
     }
 
     const manhwaIDIndex = userIDManhwa.manhwas.findIndex(
@@ -45,7 +47,7 @@ export class InMemoryUserManhwaRepository implements UserManhwaRepository {
     )
 
     if (manhwaIDIndex === -1) {
-      throw new ResourceNotFoundError()
+      return Promise.resolve(null)
     }
 
     userIDManhwa.manhwas.splice(manhwaIDIndex, 1)
@@ -53,21 +55,24 @@ export class InMemoryUserManhwaRepository implements UserManhwaRepository {
     return Promise.resolve(userIDManhwa)
   }
 
-  getAllManhwas(userID: string): Promise<ManhwaUserManhwa[]> {
+  getAllManhwas(userID: string): Promise<ManhwaUserManhwa[] | null> {
     const userIDManhwa = this.items.find((item) => item.user_id === userID)
 
     if (!userIDManhwa) {
-      throw new ResourceNotFoundError()
+      return Promise.resolve(null)
     }
 
     return Promise.resolve(userIDManhwa.manhwas)
   }
 
-  getManhwasByProfile(userID: string, page: number): Promise<UserManhwa> {
+  getManhwasByProfile(
+    userID: string,
+    page: number,
+  ): Promise<UserManhwa | null> {
     const userIDManhwa = this.items.find((item) => item.user_id === userID)
 
     if (!userIDManhwa) {
-      throw new ResourceNotFoundError()
+      return Promise.resolve(null)
     }
 
     userIDManhwa.manhwas = userIDManhwa.manhwas.slice(
@@ -81,11 +86,11 @@ export class InMemoryUserManhwaRepository implements UserManhwaRepository {
   updateManhwaOrder(
     userID: string,
     order: { manhwa_id: string; manhwa_position: number }[],
-  ): Promise<string> {
+  ): Promise<string | null> {
     const userIDManhwa = this.items.find((item) => item.user_id === userID)
 
     if (!userIDManhwa || !userIDManhwa.manhwas) {
-      throw new ResourceNotFoundError()
+      return Promise.resolve(null)
     }
 
     const manhwaList = userIDManhwa.manhwas
@@ -123,11 +128,11 @@ export class InMemoryUserManhwaRepository implements UserManhwaRepository {
     return Promise.resolve(manhwaAlreadyRegistered)
   }
 
-  getQtyManhwas(userID: string): Promise<number> {
+  getQtyManhwas(userID: string): Promise<number | null> {
     const userIDManhwa = this.items.find((item) => item.user_id === userID)
 
     if (!userIDManhwa) {
-      throw new ResourceNotFoundError()
+      return Promise.resolve(null)
     }
 
     return Promise.resolve(userIDManhwa.manhwas.length)
