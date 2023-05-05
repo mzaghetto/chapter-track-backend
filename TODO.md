@@ -17,14 +17,14 @@
 - [x] It should be possible to add a new manhwa to user profile;
 - [x] It should be possible to get all manhwas [by profile];
 - [ ] It should be possible to verify the unread manhwas [by profile];
-- [ ] It should be possible to remove a manhwa to user profile;
-- [ ] It should be possible to remove a list of manhwas to user profile;
+- [x] It should be possible to remove a manhwa from user profile;
+- [ ] It should be possible to remove a list of manhwas from user profile;
 - [ ] It should be possible to register a telegram user to receive updates from manhwas;
 - [ ] It should be possible to active notifications from website;
 - [ ] It should be possible to active notifications from telegram;
 - [ ] It should be possible to deactive notifications from website;
 - [ ] It should be possible to deactive notifications from telegram;
-- [ ] It should be possible to organize the manhwa list;
+- [x] It should be possible to organize the manhwa list;
 
 ## RNs (Regras de negócio)
 - [x] The user should not be able to register with a duplicate email;

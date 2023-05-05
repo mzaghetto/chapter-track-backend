@@ -53,6 +53,16 @@ export class InMemoryUserManhwaRepository implements UserManhwaRepository {
     return Promise.resolve(userIDManhwa)
   }
 
+  getAllManhwas(userID: string): Promise<ManhwaUserManhwa[]> {
+    const userIDManhwa = this.items.find((item) => item.user_id === userID)
+
+    if (!userIDManhwa) {
+      throw new ResourceNotFoundError()
+    }
+
+    return Promise.resolve(userIDManhwa.manhwas)
+  }
+
   getManhwasByProfile(userID: string, page: number): Promise<UserManhwa> {
     const userIDManhwa = this.items.find((item) => item.user_id === userID)
 
@@ -66,6 +76,34 @@ export class InMemoryUserManhwaRepository implements UserManhwaRepository {
     )
 
     return Promise.resolve(userIDManhwa)
+  }
+
+  updateManhwaOrder(
+    userID: string,
+    order: { manhwa_id: string; manhwa_position: number }[],
+  ): Promise<string> {
+    const userIDManhwa = this.items.find((item) => item.user_id === userID)
+
+    if (!userIDManhwa || !userIDManhwa.manhwas) {
+      throw new ResourceNotFoundError()
+    }
+
+    const manhwaList = userIDManhwa.manhwas
+    const updatedManhwas = order
+      .map((manhwa) => {
+        const matchingManhwas = manhwaList.filter(
+          (item) => item.manhwa_id === manhwa.manhwa_id,
+        )
+        matchingManhwas.forEach((matchingManhwa) => {
+          matchingManhwa.manhwa_position = manhwa.manhwa_position
+        })
+        return matchingManhwas
+      })
+      .flat()
+
+    userIDManhwa.manhwas = updatedManhwas
+
+    return Promise.resolve('Atualizado com sucesso!')
   }
 
   findByManhwaID(
