@@ -16,7 +16,7 @@
 #### User_manhwa
 - [x] It should be possible to add a new manhwa to user profile;
 - [x] It should be possible to get all manhwas [by profile];
-- [ ] It should be possible to verify the unread manhwas [by profile];
+- [x] It should be possible to verify the unread manhwas [by profile];
 - [x] It should be possible to remove a manhwa from user profile;
 - [ ] It should be possible to remove a list of manhwas from user profile;
 - [ ] It should be possible to register a telegram user to receive updates from manhwas;
