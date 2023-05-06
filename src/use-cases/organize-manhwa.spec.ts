@@ -8,6 +8,7 @@ import { ManhwaPositionNegativeError } from './errors/manhwa-position-negative-e
 import { ManhwaPositionBreakOrderError } from './errors/manhwa-position-break-order-error'
 import { ManhwaPositionAlreadyTakenError } from './errors/manhwa-position-already-taken-error'
 import { InvalidManhwaIdError } from './errors/invalid-manhwa-id-error'
+import { ResourceNotFoundError } from './errors/resource-not-found'
 
 let usersRepository: InMemoryUsersRepository
 let userManhwaRepository: InMemoryUserManhwaRepository
@@ -82,6 +83,21 @@ describe('Organize Manhwa Use Case', () => {
     })
 
     expect(userManhwa).toEqual('Atualizado com sucesso!')
+  })
+
+  it('should not be able to send with user id invalid', async () => {
+    const order = [
+      { manhwa_id: 'manhwa-1', manhwa_position: 1 },
+      { manhwa_id: 'manhwa-2', manhwa_position: 2 },
+      { manhwa_id: 'manhwa-03', manhwa_position: 3 },
+    ]
+
+    await expect(
+      sut.execute({
+        userID: 'user-02',
+        order,
+      }),
+    ).rejects.toBeInstanceOf(ResourceNotFoundError)
   })
 
   it('should not be able to send the manhwa id invalid', async () => {

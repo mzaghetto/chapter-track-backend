@@ -18,7 +18,6 @@ describe('Remove Manhwa from User Manhwa Use Case', () => {
     manhwasRepository = new InMemoryManhwasRepository()
     sut = new RemoveManhwaToUserManhwaUseCase(
       userManhwaRepository,
-      usersRepository,
       manhwasRepository,
     )
 
@@ -55,6 +54,17 @@ describe('Remove Manhwa from User Manhwa Use Case', () => {
       users_to_notify: [],
     })
 
+    await manhwasRepository.create({
+      id: 'manhwa-03',
+      name: 'The Baka',
+      last_episode_released: 123,
+      last_episode_notified: 124,
+      available_read_url: ['Mangatop', 'MCReader', 'Neox'],
+      manhwa_thumb: 'http://www.thum-qualquer.com',
+      url_crawler: 'https://www.mangageko.com/manga/manga-1773/',
+      users_to_notify: [],
+    })
+
     await userManhwaRepository.create({
       id: 'user-manhwa-01',
       user_id: 'user-01',
@@ -80,6 +90,15 @@ describe('Remove Manhwa from User Manhwa Use Case', () => {
       notify_telegram: false,
       notification_website: true,
     })
+
+    await userManhwaRepository.addManhwa('user-01', {
+      manhwa_id: 'manhwa-03',
+      manhwa_position: 0,
+      last_episode_read: 0,
+      read_url: ['https://www.mangageko.com/manga/manga-1773/'],
+      notify_telegram: false,
+      notification_website: true,
+    })
   })
 
   it('should be able to remove a manhwa from a user in user manhwa', async () => {
@@ -88,7 +107,7 @@ describe('Remove Manhwa from User Manhwa Use Case', () => {
       manhwaID: 'manhwa-01',
     })
 
-    expect(userManhwa.manhwas.length).toEqual(1)
+    expect(userManhwa.manhwas.length).toEqual(2)
     expect(userManhwa.manhwas[0].manhwa_id).toEqual('manhwa-02')
   })
 
@@ -97,6 +116,20 @@ describe('Remove Manhwa from User Manhwa Use Case', () => {
       sut.execute({
         user_id: 'user-not-exists',
         manhwaID: 'manhwa-01',
+      }),
+    ).rejects.toBeInstanceOf(ResourceNotFoundError)
+  })
+
+  it('should not be able to remove a manhwa not registered in user manhwa', async () => {
+    await sut.execute({
+      user_id: 'user-01',
+      manhwaID: 'manhwa-03',
+    })
+
+    await expect(() =>
+      sut.execute({
+        user_id: 'user-01',
+        manhwaID: 'manhwa-03',
       }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError)
   })

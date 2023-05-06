@@ -1,5 +1,4 @@
 import { UserManhwaRepository } from '@/repositories/user-manhwa-repository'
-import { UsersRepository } from '@/repositories/users-repository'
 import { UserManhwa } from '@prisma/client'
 import { ResourceNotFoundError } from './errors/resource-not-found'
 import { ManhwasRepository } from '@/repositories/manhwas-repository'
@@ -16,7 +15,6 @@ interface RemoveManhwaToUserManhwaUseCaseReponse {
 export class RemoveManhwaToUserManhwaUseCase {
   constructor(
     private userManhwaRepository: UserManhwaRepository,
-    private usersRepository: UsersRepository,
     private manhwaRepository: ManhwasRepository,
   ) {}
 
@@ -24,12 +22,6 @@ export class RemoveManhwaToUserManhwaUseCase {
     user_id,
     manhwaID,
   }: RemoveManhwaToUserManhwaUseCaseRequest): Promise<RemoveManhwaToUserManhwaUseCaseReponse> {
-    const userExists = await this.usersRepository.findByID(user_id)
-
-    if (!userExists) {
-      throw new ResourceNotFoundError()
-    }
-
     const manhwaExists = await this.manhwaRepository.findByID(manhwaID)
 
     if (!manhwaExists) {

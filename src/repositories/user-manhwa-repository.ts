@@ -12,10 +12,10 @@ export interface UserManhwaRepository {
   updateManhwaOrder(
     userID: string,
     order: Array<{ manhwa_id: string; manhwa_position: number }>,
-  ): Promise<string | null>
+  ): Promise<string>
   findByManhwaID(
     userID: string,
     manhwaID: string,
-  ): Promise<UserManhwa | null | undefined>
+  ): Promise<ManhwaUserManhwa | null | undefined>
   getQtyManhwas(userID: string): Promise<number | null>
 }

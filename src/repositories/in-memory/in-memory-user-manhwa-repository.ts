@@ -1,7 +1,6 @@
 import { ManhwaUserManhwa, UserManhwa } from '@prisma/client'
 import { randomUUID } from 'crypto'
 import { UserManhwaRepository } from '../user-manhwa-repository'
-import { ManhwaAlreadyExistsError } from '@/use-cases/errors/manhwa-already-exists-error'
 
 export class InMemoryUserManhwaRepository implements UserManhwaRepository {
   public items: UserManhwa[] = []
@@ -38,21 +37,21 @@ export class InMemoryUserManhwaRepository implements UserManhwaRepository {
   removeManhwa(userID: string, manhwaID: string): Promise<UserManhwa | null> {
     const userIDManhwa = this.items.find((item) => item.user_id === userID)
 
-    if (!userIDManhwa) {
-      return Promise.resolve(null)
+    if (userIDManhwa?.manhwas) {
+      const manhwaIDIndex = userIDManhwa.manhwas.findIndex(
+        (item) => item.manhwa_id === manhwaID,
+      )
+
+      if (manhwaIDIndex === -1) {
+        return Promise.resolve(null)
+      }
+
+      userIDManhwa.manhwas.splice(manhwaIDIndex, 1)
+
+      return Promise.resolve(userIDManhwa)
     }
 
-    const manhwaIDIndex = userIDManhwa.manhwas.findIndex(
-      (item) => item.manhwa_id === manhwaID,
-    )
-
-    if (manhwaIDIndex === -1) {
-      return Promise.resolve(null)
-    }
-
-    userIDManhwa.manhwas.splice(manhwaIDIndex, 1)
-
-    return Promise.resolve(userIDManhwa)
+    return Promise.resolve(null)
   }
 
   getAllManhwas(userID: string): Promise<ManhwaUserManhwa[] | null> {
@@ -86,27 +85,26 @@ export class InMemoryUserManhwaRepository implements UserManhwaRepository {
   updateManhwaOrder(
     userID: string,
     order: { manhwa_id: string; manhwa_position: number }[],
-  ): Promise<string | null> {
-    const userIDManhwa = this.items.find((item) => item.user_id === userID)
+  ): Promise<string> {
+    const userIDManhwa = this.items.filter((item) => item.user_id === userID)
 
-    if (!userIDManhwa || !userIDManhwa.manhwas) {
-      return Promise.resolve(null)
-    }
-
-    const manhwaList = userIDManhwa.manhwas
-    const updatedManhwas = order
-      .map((manhwa) => {
-        const matchingManhwas = manhwaList.filter(
-          (item) => item.manhwa_id === manhwa.manhwa_id,
-        )
-        matchingManhwas.forEach((matchingManhwa) => {
-          matchingManhwa.manhwa_position = manhwa.manhwa_position
+    userIDManhwa.map((user) => {
+      const manhwaList = user.manhwas
+      const updatedManhwas = order
+        .map((manhwa) => {
+          const matchingManhwas = manhwaList.filter(
+            (item) => item.manhwa_id === manhwa.manhwa_id,
+          )
+          matchingManhwas.forEach((matchingManhwa) => {
+            matchingManhwa.manhwa_position = manhwa.manhwa_position
+          })
+          return matchingManhwas
         })
-        return matchingManhwas
-      })
-      .flat()
+        .flat()
 
-    userIDManhwa.manhwas = updatedManhwas
+      user.manhwas = updatedManhwas
+      return user
+    })
 
     return Promise.resolve('Atualizado com sucesso!')
   }
@@ -114,7 +112,7 @@ export class InMemoryUserManhwaRepository implements UserManhwaRepository {
   findByManhwaID(
     userID: string,
     manhwaID: string,
-  ): Promise<UserManhwa | null | undefined> {
+  ): Promise<ManhwaUserManhwa | null | undefined> {
     const userIDManhwa = this.items.find((item) => item.user_id === userID)
 
     const manhwaAlreadyRegistered = userIDManhwa?.manhwas.find(
@@ -122,10 +120,10 @@ export class InMemoryUserManhwaRepository implements UserManhwaRepository {
     )
 
     if (manhwaAlreadyRegistered) {
-      throw new ManhwaAlreadyExistsError()
+      return Promise.resolve(manhwaAlreadyRegistered)
     }
 
-    return Promise.resolve(manhwaAlreadyRegistered)
+    return Promise.resolve(null)
   }
 
   getQtyManhwas(userID: string): Promise<number | null> {

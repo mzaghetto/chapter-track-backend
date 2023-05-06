@@ -19,7 +19,6 @@ describe('Register Manhwa to User Manhwa Use Case', () => {
     manhwasRepository = new InMemoryManhwasRepository()
     sut = new AddManhwaToUserManhwaUseCase(
       userManhwaRepository,
-      usersRepository,
       manhwasRepository,
     )
 

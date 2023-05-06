@@ -70,10 +70,6 @@ export class OrganizeManhwasUseCase {
       order,
     )
 
-    if (!userManhwa) {
-      throw new ResourceNotFoundError()
-    }
-
     return {
       userManhwa,
     }
