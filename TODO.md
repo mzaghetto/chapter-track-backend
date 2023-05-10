@@ -41,7 +41,7 @@
 ## RNFs (Requisitos não-funcionais)
 - [x] User password must be encrypted;
 - [x] Application data must be persisted in a MongoDB database;
-- [ ] All data lists [manhwas] must be paginated with 20 items by page;
+- [x] All data lists [manhwas] must be paginated with 20 items by page;
 - [x] The user must be identified by a JWT (JSON Web Token);
 
 
@@ -60,4 +60,4 @@
 
 ## Tests
 [ ] Add e2e tests
-[ ] Add CI github
+[x] Add CI github
