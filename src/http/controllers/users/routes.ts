@@ -4,12 +4,14 @@ import { profile } from './profile'
 import { register } from './register'
 import { FastifyInstance } from 'fastify'
 import { refresh } from './refresh'
+import { updateProfile } from './update-profile'
 
 export async function usersRoutes(app: FastifyInstance) {
   app.post('/register', register)
   app.post('/sessions', authenticate)
 
   app.get('/me', { onRequest: [verifyJWT] }, profile)
+  app.patch('/me', { onRequest: [verifyJWT] }, updateProfile)
 
   app.patch('/token/refresh', refresh)
 }

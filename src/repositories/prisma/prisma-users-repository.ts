@@ -21,7 +21,10 @@ export class PrismaUsersRepository implements UsersRepository {
       where: {
         id: userID,
       },
-      data,
+      data: {
+        ...data,
+        updated_at: new Date(),
+      },
     })
 
     return updatedUser
