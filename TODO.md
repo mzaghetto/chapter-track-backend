@@ -48,7 +48,7 @@
 
 ## Routes
 [ ] Add all routes
-[ ] add route to update user profile
+[x] add route to update user profile
 [ ] add route to add a manhwa
 [ ] add route to update a manhwa
 [ ] add route to add a manhwa to a user profile
