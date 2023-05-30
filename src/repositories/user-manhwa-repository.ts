@@ -13,9 +13,6 @@ export interface UserManhwaRepository {
     userID: string,
     order: Array<{ manhwa_id: string; manhwa_position: number }>,
   ): Promise<string>
-  findByManhwaID(
-    userID: string,
-    manhwaID: string,
-  ): Promise<ManhwaUserManhwa | null | undefined>
+  findByManhwaID(userID: string, manhwaID: string): Promise<UserManhwa | null>
   getQtyManhwas(userID: string): Promise<number | null>
 }

@@ -15,16 +15,25 @@ export class PrismaUserManhwaRepository implements UserManhwaRepository {
     userID: string,
     data: Prisma.ManhwaUserManhwaCreateInput,
   ): Promise<UserManhwa | null> {
-    const userIDManhwa = await prisma.userManhwa.update({
+    const manhwa = await prisma.userManhwa.findFirst({
       where: {
-        id: userID,
-      },
-      data: {
-        manhwas: data,
+        user_id: userID,
       },
     })
 
-    return userIDManhwa
+    const updatedUser = await prisma.userManhwa.update({
+      where: { id: manhwa?.id },
+      data: {
+        manhwas: { push: data },
+      },
+      include: { manhwas: true },
+    })
+
+    if (!updatedUser) {
+      return null
+    }
+
+    return updatedUser
   }
 
   removeManhwa(userID: string, manhwaID: string): Promise<UserManhwa | null> {
@@ -49,14 +58,44 @@ export class PrismaUserManhwaRepository implements UserManhwaRepository {
     throw new Error('Method not implemented.')
   }
 
-  findByManhwaID(
+  async findByManhwaID(
     userID: string,
     manhwaID: string,
-  ): Promise<ManhwaUserManhwa | null | undefined> {
-    throw new Error('Method not implemented.')
+  ): Promise<UserManhwa | null> {
+    const manhwa = await prisma.userManhwa.findFirst({
+      where: {
+        user_id: userID,
+        manhwas: {
+          some: {
+            manhwa_id: manhwaID,
+          },
+        },
+      },
+    })
+
+    return manhwa
   }
 
-  getQtyManhwas(userID: string): Promise<number | null> {
-    throw new Error('Method not implemented.')
+  async getQtyManhwas(userID: string): Promise<number | null> {
+    const userManhwa = await prisma.userManhwa.findFirst({
+      where: {
+        user_id: userID,
+      },
+    })
+
+    const user = await prisma.userManhwa.findUnique({
+      where: {
+        id: userManhwa?.id,
+      },
+      select: {
+        manhwas: true,
+      },
+    })
+
+    if (!user) {
+      return null
+    }
+
+    return user.manhwas.length
   }
 }

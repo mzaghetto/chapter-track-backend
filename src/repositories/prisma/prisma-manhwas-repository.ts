@@ -28,7 +28,13 @@ export class PrismaManhwasRepository implements ManhwasRepository {
     throw new Error('Method not implemented.')
   }
 
-  findByID(manhwaID: string): Promise<Manhwas | null> {
-    throw new Error('Method not implemented.')
+  async findByID(manhwaID: string): Promise<Manhwas | null> {
+    const manhwa = await prisma.manhwas.findFirst({
+      where: {
+        id: manhwaID,
+      },
+    })
+
+    return manhwa
   }
 }
