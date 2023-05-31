@@ -23,9 +23,18 @@ export class PrismaManhwasRepository implements ManhwasRepository {
 
   findByIDAndUpdate(
     manhwaID: string,
-    data: string | Prisma.ManhwasUpdateInput,
+    data: Prisma.ManhwasUpdateInput,
   ): Promise<Manhwas | null> {
-    throw new Error('Method not implemented.')
+    const updatedManhwa = prisma.manhwas.update({
+      where: {
+        id: manhwaID,
+      },
+      data: {
+        ...data,
+      },
+    })
+
+    return updatedManhwa
   }
 
   async findByID(manhwaID: string): Promise<Manhwas | null> {

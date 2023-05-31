@@ -49,9 +49,10 @@
 ## Routes
 [ ] Add all routes
 [x] add route to update user profile
-[ ] add route to add a manhwa
-[ ] add route to update a manhwa
-[ ] add route to add a manhwa to a user profile
+[x] add route to add a manhwa
+[x] add route to update a manhwa
+[ ] add route to get all manhwas available
+[x] add route to add a manhwa to a user profile
 [ ] add route to transform an user role to an admin role
 [ ] add route to get all manhwas from a profile
 [ ] add route to active/deactive notification
