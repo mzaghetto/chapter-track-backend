@@ -5,12 +5,12 @@ import { ManhwaPositionNegativeError } from './errors/manhwa-position-negative-e
 import { ResourceNotFoundError } from './errors/resource-not-found'
 import { UserManhwaRepository } from '@/repositories/user-manhwa-repository'
 
-interface OrganizeManhwasCaseRequest {
+interface OrganizeManhwasUseCaseRequest {
   userID: string
   order: Array<{ manhwa_id: string; manhwa_position: number }>
 }
 
-interface OrganizeManhwasCaseResponse {
+interface OrganizeManhwasUseCaseResponse {
   userManhwa: string
 }
 
@@ -20,7 +20,7 @@ export class OrganizeManhwasUseCase {
   async execute({
     userID,
     order,
-  }: OrganizeManhwasCaseRequest): Promise<OrganizeManhwasCaseResponse> {
+  }: OrganizeManhwasUseCaseRequest): Promise<OrganizeManhwasUseCaseResponse> {
     const getAllManhwas = await this.userManhwaRepository.getAllManhwas(userID)
 
     if (getAllManhwas === null) {
@@ -36,7 +36,7 @@ export class OrganizeManhwasUseCase {
       }
     }
 
-    const updatedManhwas = getAllManhwas.map((manhwa) => {
+    const allManhwasWithOrderSent = getAllManhwas.map((manhwa) => {
       const orderObj = order.find((o) => o.manhwa_id === manhwa.manhwa_id)
       if (orderObj) {
         manhwa.manhwa_position = orderObj.manhwa_position
@@ -44,7 +44,7 @@ export class OrganizeManhwasUseCase {
       return manhwa
     })
 
-    const sortedManhwas = updatedManhwas.sort(
+    const sortedManhwas = allManhwasWithOrderSent.sort(
       (a, b) => a.manhwa_position - b.manhwa_position,
     )
 

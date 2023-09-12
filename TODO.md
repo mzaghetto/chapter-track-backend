@@ -57,7 +57,7 @@
 [ ] add route to get all manhwas from a profile
 [ ] add route to active/deactive notification
 [ ] add route to verify the unread manhwas
-[ ] add route to remove a manhwa from a profile
+[x] add route to remove a manhwa from a profile
 
 ## Tests
 [ ] Add e2e tests

@@ -109,21 +109,25 @@ export class InMemoryUserManhwaRepository implements UserManhwaRepository {
     return Promise.resolve('Atualizado com sucesso!')
   }
 
-  findByManhwaID(
+  async findByManhwaID(
     userID: string,
     manhwaID: string,
-  ): Promise<ManhwaUserManhwa | null | undefined> {
+  ): Promise<UserManhwa | null> {
     const userIDManhwa = this.items.find((item) => item.user_id === userID)
 
-    const manhwaAlreadyRegistered = userIDManhwa?.manhwas.find(
-      (item) => item.manhwa_id === manhwaID,
-    )
-
-    if (manhwaAlreadyRegistered) {
-      return Promise.resolve(manhwaAlreadyRegistered)
+    if (!userIDManhwa) {
+      return Promise.resolve(null)
     }
 
-    return Promise.resolve(null)
+    const manhwaById = userIDManhwa.manhwas.find(
+      (manhwa) => manhwa.manhwa_id === manhwaID,
+    )
+
+    if (!manhwaById) {
+      return Promise.resolve(null)
+    }
+
+    return Promise.resolve(userIDManhwa)
   }
 
   getQtyManhwas(userID: string): Promise<number | null> {
