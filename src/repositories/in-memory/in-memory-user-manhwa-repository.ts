@@ -34,7 +34,10 @@ export class InMemoryUserManhwaRepository implements UserManhwaRepository {
     return Promise.resolve(userIDManhwa)
   }
 
-  removeManhwa(userID: string, manhwaID: string): Promise<UserManhwa | null> {
+  async removeManhwa(
+    userID: string,
+    manhwaID: string,
+  ): Promise<UserManhwa | null> {
     const userIDManhwa = this.items.find((item) => item.user_id === userID)
 
     if (userIDManhwa?.manhwas) {
@@ -54,7 +57,7 @@ export class InMemoryUserManhwaRepository implements UserManhwaRepository {
     return Promise.resolve(null)
   }
 
-  getAllManhwas(userID: string): Promise<ManhwaUserManhwa[] | null> {
+  async getAllManhwas(userID: string): Promise<ManhwaUserManhwa[] | null> {
     const userIDManhwa = this.items.find((item) => item.user_id === userID)
 
     if (!userIDManhwa) {
@@ -64,7 +67,7 @@ export class InMemoryUserManhwaRepository implements UserManhwaRepository {
     return Promise.resolve(userIDManhwa.manhwas)
   }
 
-  getManhwasByProfile(
+  async getManhwasByProfile(
     userID: string,
     page: number,
   ): Promise<UserManhwa | null> {
@@ -82,7 +85,7 @@ export class InMemoryUserManhwaRepository implements UserManhwaRepository {
     return Promise.resolve(userIDManhwa)
   }
 
-  updateManhwaOrder(
+  async updateManhwaOrder(
     userID: string,
     order: { manhwa_id: string; manhwa_position: number }[],
   ): Promise<string> {
@@ -130,7 +133,7 @@ export class InMemoryUserManhwaRepository implements UserManhwaRepository {
     return Promise.resolve(userIDManhwa)
   }
 
-  getQtyManhwas(userID: string): Promise<number | null> {
+  async getQtyManhwas(userID: string): Promise<number | null> {
     const userIDManhwa = this.items.find((item) => item.user_id === userID)
 
     if (!userIDManhwa) {
