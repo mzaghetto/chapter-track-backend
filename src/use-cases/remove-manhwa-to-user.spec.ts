@@ -104,18 +104,28 @@ describe('Remove Manhwa from User Manhwa Use Case', () => {
   it('should be able to remove a manhwa from a user in user manhwa', async () => {
     const { userManhwa } = await sut.execute({
       user_id: 'user-01',
-      manhwaID: 'manhwa-01',
+      manhwasID: ['manhwa-01'],
     })
 
     expect(userManhwa.manhwas.length).toEqual(2)
     expect(userManhwa.manhwas[0].manhwa_id).toEqual('manhwa-02')
   })
 
+  it('should be able to remove a list of manhwas from a user in user manhwa', async () => {
+    const { userManhwa } = await sut.execute({
+      user_id: 'user-01',
+      manhwasID: ['manhwa-01', 'manhwa-02'],
+    })
+
+    expect(userManhwa.manhwas.length).toEqual(1)
+    expect(userManhwa.manhwas[0].manhwa_id).toEqual('manhwa-03')
+  })
+
   it('should not be able to remove a manhwa from a user in user manhwa with a invalid userID', async () => {
     await expect(() =>
       sut.execute({
         user_id: 'user-not-exists',
-        manhwaID: 'manhwa-01',
+        manhwasID: ['manhwa-01'],
       }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError)
   })
@@ -123,13 +133,13 @@ describe('Remove Manhwa from User Manhwa Use Case', () => {
   it('should not be able to remove a manhwa not registered in user manhwa', async () => {
     await sut.execute({
       user_id: 'user-01',
-      manhwaID: 'manhwa-03',
+      manhwasID: ['manhwa-03'],
     })
 
     await expect(() =>
       sut.execute({
         user_id: 'user-01',
-        manhwaID: 'manhwa-03',
+        manhwasID: ['manhwa-03'],
       }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError)
   })
@@ -138,7 +148,7 @@ describe('Remove Manhwa from User Manhwa Use Case', () => {
     await expect(() =>
       sut.execute({
         user_id: 'user-01',
-        manhwaID: 'manhwa-not-exists',
+        manhwasID: ['manhwa-01', 'manhwa-not-exists'],
       }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError)
   })

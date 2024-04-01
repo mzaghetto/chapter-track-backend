@@ -36,20 +36,24 @@ export class InMemoryUserManhwaRepository implements UserManhwaRepository {
 
   async removeManhwa(
     userID: string,
-    manhwaID: string,
+    manhwaID: string[],
   ): Promise<UserManhwa | null> {
     const userIDManhwa = this.items.find((item) => item.user_id === userID)
 
     if (userIDManhwa?.manhwas) {
-      const manhwaIDIndex = userIDManhwa.manhwas.findIndex(
-        (item) => item.manhwa_id === manhwaID,
-      )
+      const manhwaIDIndex = manhwaID.map((manhwa) => {
+        return userIDManhwa.manhwas.findIndex(
+          (item) => item.manhwa_id === manhwa,
+        )
+      })
 
-      if (manhwaIDIndex === -1) {
+      if (manhwaIDIndex.includes(-1)) {
         return Promise.resolve(null)
       }
 
-      userIDManhwa.manhwas.splice(manhwaIDIndex, 1)
+      manhwaIDIndex
+        .sort((a, b) => b - a)
+        .forEach((item) => userIDManhwa.manhwas.splice(item, 1))
 
       return Promise.resolve(userIDManhwa)
     }
