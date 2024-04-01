@@ -6,7 +6,7 @@ import { ManhwaAlreadyExistsError } from './errors/manhwa-already-exists-error'
 
 interface AddManhwaToUserManhwaUseCaseRequest {
   user_id: string
-  manhwas: ManhwaUserManhwa
+  manhwa: ManhwaUserManhwa
 }
 
 interface AddManhwaToUserManhwaUseCaseReponse {
@@ -21,16 +21,16 @@ export class AddManhwaToUserManhwaUseCase {
 
   async execute({
     user_id,
-    manhwas,
+    manhwa,
   }: AddManhwaToUserManhwaUseCaseRequest): Promise<AddManhwaToUserManhwaUseCaseReponse> {
-    const manhwaExists = await this.manhwaRepository.findByID(manhwas.manhwa_id)
+    const manhwaExists = await this.manhwaRepository.findByID(manhwa.manhwa_id)
 
     if (!manhwaExists) {
       throw new ResourceNotFoundError()
     }
 
     const manhwaAlreadyRegistered =
-      await this.userManhwaRepository.findByManhwaID(user_id, manhwas.manhwa_id)
+      await this.userManhwaRepository.findByManhwaID(user_id, manhwa.manhwa_id)
 
     if (manhwaAlreadyRegistered) {
       throw new ManhwaAlreadyExistsError()
@@ -38,11 +38,11 @@ export class AddManhwaToUserManhwaUseCase {
 
     const getQtyManhwas = await this.userManhwaRepository.getQtyManhwas(user_id)
 
-    manhwas.manhwa_position = getQtyManhwas !== null ? getQtyManhwas : 0
+    manhwa.manhwa_position = getQtyManhwas !== null ? getQtyManhwas : 0
 
     const userManhwa = await this.userManhwaRepository.addManhwa(
       user_id,
-      manhwas,
+      manhwa,
     )
 
     if (!userManhwa) {

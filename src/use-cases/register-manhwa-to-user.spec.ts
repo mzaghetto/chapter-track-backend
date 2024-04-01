@@ -69,7 +69,7 @@ describe('Register Manhwa to User Manhwa Use Case', () => {
     await userManhwaRepository.create({
       id: 'user-manhwa-01',
       user_id: 'user-01',
-      manhwas: [],
+      manhwa: [],
       telegram_id: null,
       telegram_active: false,
     })
@@ -78,7 +78,7 @@ describe('Register Manhwa to User Manhwa Use Case', () => {
   it('should be able to add a manhwa in user manhwa', async () => {
     const { userManhwa } = await sut.execute({
       user_id: 'user-01',
-      manhwas: {
+      manhwa: {
         manhwa_id: 'manhwa-01',
         manhwa_position: 0,
         last_episode_read: 0,
@@ -96,7 +96,7 @@ describe('Register Manhwa to User Manhwa Use Case', () => {
     await expect(() =>
       sut.execute({
         user_id: 'user-02',
-        manhwas: {
+        manhwa: {
           manhwa_id: 'manhwa-01',
           manhwa_position: 0,
           last_episode_read: 0,
@@ -112,7 +112,7 @@ describe('Register Manhwa to User Manhwa Use Case', () => {
     await expect(() =>
       sut.execute({
         user_id: 'user-01',
-        manhwas: {
+        manhwa: {
           manhwa_id: 'manhwa-non-existent',
           manhwa_position: 0,
           last_episode_read: 0,
@@ -127,7 +127,7 @@ describe('Register Manhwa to User Manhwa Use Case', () => {
   it('should not be able to add a manhwa that has already been registered in manhwa to user manhwa', async () => {
     await sut.execute({
       user_id: 'user-01',
-      manhwas: {
+      manhwa: {
         manhwa_id: 'manhwa-01',
         manhwa_position: 0,
         last_episode_read: 0,
@@ -140,7 +140,7 @@ describe('Register Manhwa to User Manhwa Use Case', () => {
     await expect(() =>
       sut.execute({
         user_id: 'user-01',
-        manhwas: {
+        manhwa: {
           manhwa_id: 'manhwa-01',
           manhwa_position: 0,
           last_episode_read: 0,
@@ -155,7 +155,7 @@ describe('Register Manhwa to User Manhwa Use Case', () => {
   it('should be auto increment the position of the manhwa in user manhwa', async () => {
     await sut.execute({
       user_id: 'user-01',
-      manhwas: {
+      manhwa: {
         manhwa_id: 'manhwa-01',
         manhwa_position: 0,
         last_episode_read: 0,
@@ -167,7 +167,7 @@ describe('Register Manhwa to User Manhwa Use Case', () => {
 
     await sut.execute({
       user_id: 'user-01',
-      manhwas: {
+      manhwa: {
         manhwa_id: 'manhwa-02',
         manhwa_position: 0,
         last_episode_read: 0,
@@ -179,7 +179,7 @@ describe('Register Manhwa to User Manhwa Use Case', () => {
 
     const { userManhwa } = await sut.execute({
       user_id: 'user-01',
-      manhwas: {
+      manhwa: {
         manhwa_id: 'manhwa-03',
         manhwa_position: 0,
         last_episode_read: 0,
