@@ -189,8 +189,6 @@ describe('Register Manhwa to User Manhwa Use Case', () => {
       },
     })
 
-    console.log(userManhwa)
-
     expect(userManhwa.manhwas[0].manhwa_position).toEqual(0)
     expect(userManhwa.manhwas[2].manhwa_position).toEqual(2)
   })
