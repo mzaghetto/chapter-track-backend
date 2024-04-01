@@ -34,9 +34,9 @@
 - [x] A new manhwa can only be registered by administrators;
 - [x] A new manhwa can only be edited by administrators;
 - [ ] The user can start/stop the notifications from a manhwa;
-- [ ] The user can add a new manhwa to his profile;
-- [ ] The user can remove a new manhwa to his profile;
-- [ ] Only admins can update the last release chapter
+- [x] The user can add a new manhwa to his profile;
+- [x] The user can remove a new manhwa to his profile;
+- [x] Only admins can update the last release chapter
 
 ## RNFs (Requisitos não-funcionais)
 - [x] User password must be encrypted;
