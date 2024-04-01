@@ -44,8 +44,6 @@
 - [x] All data lists [manhwas] must be paginated with 20 items by page;
 - [x] The user must be identified by a JWT (JSON Web Token);
 
-
-
 ## Routes
 [ ] Add all routes
 [x] add route to update user profile
@@ -54,10 +52,13 @@
 [ ] add route to get all manhwas available
 [x] add route to add a manhwa to a user profile
 [ ] add route to transform an user role to an admin role
-[ ] add route to get all manhwas from a profile
+[x] add route to get all manhwas from a profile
 [ ] add route to active/deactive notification
 [ ] add route to verify the unread manhwas
 [x] add route to remove a manhwa from a profile
+
+## Refactor
+[ ] Improve pagination response
 
 ## Tests
 [ ] Add e2e tests
