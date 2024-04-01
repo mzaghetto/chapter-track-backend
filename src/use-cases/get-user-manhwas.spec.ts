@@ -82,6 +82,14 @@ describe('Get User Manhwas Use Case', () => {
     expect.objectContaining({ name: 'The Gamer 21' })
   })
 
+  it('should be able to get manhwas of a user without page in body request', async () => {
+    await sut.execute({
+      userID: 'user-01',
+    })
+
+    expect.objectContaining({ name: 'The Gamer 21' })
+  })
+
   it('should not be able to get manhwas of user profile with wrong id', async () => {
     await expect(() =>
       sut.execute({

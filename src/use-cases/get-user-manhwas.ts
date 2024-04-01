@@ -4,7 +4,7 @@ import { UserManhwaRepository } from '@/repositories/user-manhwa-repository'
 
 interface GetUserManhwasCaseRequest {
   userID: string
-  page: number
+  page?: number
 }
 
 interface GetUserManhwasCaseResponse {

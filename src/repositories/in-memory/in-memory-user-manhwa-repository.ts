@@ -73,12 +73,16 @@ export class InMemoryUserManhwaRepository implements UserManhwaRepository {
 
   async getManhwasByProfile(
     userID: string,
-    page: number,
+    page?: number,
   ): Promise<UserManhwa | null> {
     const userIDManhwa = this.items.find((item) => item.user_id === userID)
 
     if (!userIDManhwa) {
       return Promise.resolve(null)
+    }
+
+    if (!page) {
+      page = 1
     }
 
     userIDManhwa.manhwas = userIDManhwa.manhwas.slice(
