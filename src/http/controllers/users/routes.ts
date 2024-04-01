@@ -18,7 +18,7 @@ export async function usersRoutes(app: FastifyInstance) {
   app.patch('/token/refresh', refresh)
 
   app.post('/user/add-manhwa', { onRequest: [verifyJWT] }, addManhwaToUser)
-  app.post(
+  app.delete(
     '/user/remove-manhwa',
     { onRequest: [verifyJWT] },
     removeManhwaToUser,

@@ -46,4 +46,16 @@ export class PrismaManhwasRepository implements ManhwasRepository {
 
     return manhwa
   }
+
+  async findByIDs(manhwasID: string[]): Promise<Manhwas[] | null> {
+    const manhwa = await prisma.manhwas.findMany({
+      where: {
+        id: {
+          in: manhwasID,
+        },
+      },
+    })
+
+    return manhwa
+  }
 }

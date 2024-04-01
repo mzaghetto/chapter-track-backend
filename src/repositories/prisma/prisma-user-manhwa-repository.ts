@@ -36,8 +36,43 @@ export class PrismaUserManhwaRepository implements UserManhwaRepository {
     return updatedUser
   }
 
-  removeManhwa(userID: string, manhwaID: string): Promise<UserManhwa | null> {
-    throw new Error('Method not implemented.')
+  async removeManhwa(
+    userID: string,
+    manhwasID: string[],
+  ): Promise<UserManhwa | null> {
+    const userManhwa = await prisma.userManhwa.findFirst({
+      where: { user_id: userID },
+    })
+
+    if (!userManhwa) {
+      return null
+    }
+
+    const manhwasToRemove = userManhwa.manhwas.filter((manhwa) =>
+      manhwasID.includes(manhwa.manhwa_id),
+    )
+
+    if (
+      manhwasToRemove.length === 0 ||
+      manhwasToRemove.length !== manhwasID.length
+    ) {
+      return null
+    }
+
+    userManhwa.manhwas = userManhwa.manhwas.filter(
+      (manhwa) => !manhwasID.includes(manhwa.manhwa_id),
+    )
+
+    await prisma.userManhwa.update({
+      where: { id: userManhwa.id },
+      data: {
+        manhwas: {
+          set: userManhwa.manhwas,
+        },
+      },
+    })
+
+    return userManhwa
   }
 
   getAllManhwas(userID: string): Promise<ManhwaUserManhwa[] | null> {

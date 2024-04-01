@@ -8,7 +8,7 @@ export async function removeManhwaToUser(
   reply: FastifyReply,
 ) {
   const removeManhwaToUserBodySchema = z.object({
-    manhwa_id: z.string(),
+    manhwa_id: z.string().array(),
   })
 
   const { manhwa_id } = removeManhwaToUserBodySchema.parse(request.body)
@@ -16,14 +16,14 @@ export async function removeManhwaToUser(
   try {
     const removeManhwaToUserUseCase = makeRemoveManhwaToUserUseCase()
 
-    const manhwaID = manhwa_id
+    const manhwasID = manhwa_id
 
     const { userManhwa } = await removeManhwaToUserUseCase.execute({
       user_id: request.user.sub,
-      manhwaID,
+      manhwasID,
     })
 
-    return reply.status(201).send({ userManhwa })
+    return reply.status(200).send({ userManhwa })
   } catch (error) {
     if (error instanceof ResourceNotFoundError) {
       return reply.status(400).send({ message: error.message })

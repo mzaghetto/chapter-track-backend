@@ -10,4 +10,5 @@ export interface ManhwasRepository {
     data: string | Prisma.ManhwasUpdateInput,
   ): Promise<Manhwas | null>
   findByID(manhwaID: string): Promise<Manhwas | null>
+  findByIDs(manhwasID: string[]): Promise<Manhwas[] | null>
 }

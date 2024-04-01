@@ -5,7 +5,7 @@ import { ManhwasRepository } from '@/repositories/manhwas-repository'
 
 interface RemoveManhwaToUserManhwaUseCaseRequest {
   user_id: string
-  manhwaID: string
+  manhwasID: string[]
 }
 
 interface RemoveManhwaToUserManhwaUseCaseReponse {
@@ -20,9 +20,9 @@ export class RemoveManhwaToUserManhwaUseCase {
 
   async execute({
     user_id,
-    manhwaID,
+    manhwasID,
   }: RemoveManhwaToUserManhwaUseCaseRequest): Promise<RemoveManhwaToUserManhwaUseCaseReponse> {
-    const manhwaExists = await this.manhwaRepository.findByID(manhwaID)
+    const manhwaExists = await this.manhwaRepository.findByIDs(manhwasID)
 
     if (!manhwaExists) {
       throw new ResourceNotFoundError()
@@ -30,7 +30,7 @@ export class RemoveManhwaToUserManhwaUseCase {
 
     const userManhwa = await this.userManhwaRepository.removeManhwa(
       user_id,
-      manhwaID,
+      manhwasID,
     )
 
     if (!userManhwa) {
