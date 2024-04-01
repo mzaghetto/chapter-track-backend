@@ -31,8 +31,8 @@
 - [x] The user should not be able to register with a duplicate username;
 - [x] The user should not be able to change the user role in update profile;
 - [ ] The user should not be able to register 2 telegram users;
-- [ ] A new manhwa can only be registered by administrators;
-- [ ] A new manhwa can only be edited by administrators;
+- [x] A new manhwa can only be registered by administrators;
+- [x] A new manhwa can only be edited by administrators;
 - [ ] The user can start/stop the notifications from a manhwa;
 - [ ] The user can add a new manhwa to his profile;
 - [ ] The user can remove a new manhwa to his profile;
