@@ -79,11 +79,21 @@ export class PrismaUserManhwaRepository implements UserManhwaRepository {
     throw new Error('Method not implemented.')
   }
 
-  getManhwasByProfile(
+  async getManhwasByProfile(
     userID: string,
-    page: number,
+    page?: number,
   ): Promise<UserManhwa | null> {
-    throw new Error('Method not implemented.')
+    const userManhwa = await prisma.userManhwa.findFirst({
+      where: { user_id: userID },
+    })
+
+    console.log(userManhwa)
+
+    if (!userManhwa) {
+      return null
+    }
+
+    return userManhwa
   }
 
   updateManhwaOrder(

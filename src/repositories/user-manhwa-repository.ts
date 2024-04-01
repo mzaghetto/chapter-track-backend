@@ -8,7 +8,7 @@ export interface UserManhwaRepository {
   ): Promise<UserManhwa | null>
   removeManhwa(userID: string, manhwasID: string[]): Promise<UserManhwa | null>
   getAllManhwas(userID: string): Promise<ManhwaUserManhwa[] | null>
-  getManhwasByProfile(userID: string, page: number): Promise<UserManhwa | null>
+  getManhwasByProfile(userID: string, page?: number): Promise<UserManhwa | null>
   updateManhwaOrder(
     userID: string,
     order: Array<{ manhwa_id: string; manhwa_position: number }>,
