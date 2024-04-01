@@ -12,6 +12,8 @@
     "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui",
     "docker:start": "docker-compose up --build",
+    "docker:up": "docker-compose up --build -d",
+    "docker:down": "docker-compose down",
     "prepare": "husky install"
   },
   "keywords": [],
