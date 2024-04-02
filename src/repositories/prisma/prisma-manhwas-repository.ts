@@ -21,6 +21,19 @@ export class PrismaManhwasRepository implements ManhwasRepository {
     return manhwa
   }
 
+  async filterByName(name: string): Promise<Manhwas[] | null> {
+    const manhwa = await prisma.manhwas.findMany({
+      where: {
+        name: {
+          mode: 'insensitive',
+          contains: name,
+        },
+      },
+    })
+
+    return manhwa
+  }
+
   findByIDAndUpdate(
     manhwaID: string,
     data: Prisma.ManhwasUpdateInput,

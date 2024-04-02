@@ -5,6 +5,7 @@ export interface ManhwasRepository {
   findByName(
     name: string | Prisma.StringFieldUpdateOperationsInput,
   ): Promise<Prisma.ManhwasCreateInput | null>
+  filterByName(name: string): Promise<Manhwas[] | null>
   findByIDAndUpdate(
     manhwaID: string,
     data: string | Prisma.ManhwasUpdateInput,
