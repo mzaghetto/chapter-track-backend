@@ -1,5 +1,5 @@
-const DEFAULT_LIMIT_PAGINATION = 10
-const DEFAULT_PAGE_PAGINATION = 1
+export const DEFAULT_LIMIT_PAGINATION = 10
+export const DEFAULT_PAGE_PAGINATION = 1
 
 export class Page {
   page?: number
@@ -111,7 +111,7 @@ export abstract class Pageable<T> {
   getFilteredNameItems(items: T[], filterName?: string): T[] {
     return items.filter((item: any) => {
       const itemName = String(item.name).toLowerCase()
-      return itemName.includes(filterName!.toLowerCase())
+      return itemName.includes(filterName?.toLowerCase() ?? '')
     })
   }
 

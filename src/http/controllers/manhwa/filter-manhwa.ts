@@ -45,7 +45,11 @@ export async function filterManhwa(
   const { manhwaName, page, limit, sort } = filterManhwaParamsSchema.parse(
     request.query,
   )
-  const params = { page, limit, sort }
+
+  const pageNumber = page ? parseInt(page, 10) : undefined
+  const limitNumber = limit ? parseInt(limit, 10) : undefined
+
+  const params = { page: pageNumber, limit: limitNumber, sort }
 
   try {
     const filterManhwaByNameToUserUseCase =
