@@ -35,7 +35,7 @@ export class InMemoryManhwasRepository implements ManhwasRepository {
   async filterByName(name: string): Promise<Manhwas[] | null> {
     const filteredItems = this.items.filter((item) => item.name.includes(name))
 
-    if (!filteredItems) {
+    if (filteredItems.length === 0 || !filteredItems) {
       return Promise.resolve(null)
     }
 
