@@ -75,8 +75,20 @@ export class PrismaUserManhwaRepository implements UserManhwaRepository {
     return userManhwa
   }
 
-  getAllManhwas(userID: string): Promise<ManhwaUserManhwa[] | null> {
-    throw new Error('Method not implemented.')
+  async getAllManhwas(userID: string): Promise<ManhwaUserManhwa[] | null> {
+    const userManhwa = await prisma.userManhwa.findFirst({
+      where: { user_id: userID },
+    })
+
+    if (!userManhwa) {
+      return null
+    }
+
+    if (userManhwa.manhwas.length === 0) {
+      return null
+    }
+
+    return userManhwa.manhwas
   }
 
   async getManhwasByProfile(
@@ -87,13 +99,52 @@ export class PrismaUserManhwaRepository implements UserManhwaRepository {
       where: { user_id: userID },
     })
 
-    console.log(userManhwa)
-
     if (!userManhwa) {
       return null
     }
 
     return userManhwa
+  }
+
+  async getTelegramUser(userID: string): Promise<{
+    telegramID: string | null
+    telegramActive: boolean | null
+  } | null> {
+    const userManhwa = await prisma.userManhwa.findFirst({
+      where: { user_id: userID },
+    })
+
+    if (!userManhwa) {
+      return null
+    }
+
+    const telegramUser = {
+      telegramID: userManhwa.telegram_id,
+      telegramActive: userManhwa.telegram_active,
+    }
+
+    return telegramUser
+  }
+
+  async updateTelegramUser(
+    userID: string,
+    telegramID: string,
+    telegramActive: boolean,
+  ): Promise<{ telegramID: string; telegramActive: boolean }> {
+    prisma.userManhwa.update({
+      where: {
+        id: userID,
+      },
+      data: {
+        telegram_id: telegramID,
+        telegram_active: telegramActive,
+      },
+    })
+
+    return {
+      telegramID,
+      telegramActive,
+    }
   }
 
   updateManhwaOrder(

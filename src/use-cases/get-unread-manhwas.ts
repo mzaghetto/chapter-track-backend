@@ -30,7 +30,7 @@ export class GetUnreadManhwasUseCase {
       user_id,
     )
 
-    if (getAllManhwasFromUser === null) {
+    if (getAllManhwasFromUser?.length === 0 || getAllManhwasFromUser === null) {
       throw new ResourceNotFoundError()
     }
 
