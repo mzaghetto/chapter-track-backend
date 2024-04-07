@@ -10,8 +10,8 @@ export class InMemoryUserManhwaRepository implements UserManhwaRepository {
       user_id: data.user_id,
       id: data.id ?? randomUUID(),
       manhwas: [],
-      telegram_active: false,
-      telegram_id: null,
+      telegram_active: data.telegram_active,
+      telegram_id: data.telegram_id,
     }
 
     this.items.push(userManhwa)
@@ -91,6 +91,38 @@ export class InMemoryUserManhwaRepository implements UserManhwaRepository {
     )
 
     return Promise.resolve(userIDManhwa)
+  }
+
+  async getTelegramUser(userID: string): Promise<{
+    telegramID: string | null
+    telegramActive: boolean | null
+  } | null> {
+    const userManhwa = this.items.find((item) => item.user_id === userID)
+
+    if (!userManhwa) {
+      return Promise.resolve(null)
+    }
+
+    return Promise.resolve({
+      telegramID: userManhwa.telegram_id,
+      telegramActive: null,
+    })
+  }
+
+  async updateTelegramUser(
+    userID: string,
+    telegramID: string,
+    telegramActive: boolean,
+  ): Promise<{ telegramID: string; telegramActive: boolean }> {
+    const userManhwa = this.items.findIndex((item) => item.user_id === userID)
+
+    this.items[userManhwa].telegram_active = telegramActive
+    this.items[userManhwa].telegram_id = telegramID
+
+    return Promise.resolve({
+      telegramID,
+      telegramActive,
+    })
   }
 
   async updateManhwaOrder(
