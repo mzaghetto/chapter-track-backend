@@ -6,6 +6,15 @@ export interface UserManhwaRepository {
     userID: string,
     data: Prisma.ManhwaUserManhwaCreateInput,
   ): Promise<UserManhwa | null>
+  getTelegramUser(userID: string): Promise<{
+    telegramID: string | null
+    telegramActive: boolean | null
+  } | null>
+  updateTelegramUser(
+    userID: string,
+    telegramID: string,
+    telegramActive: boolean,
+  ): Promise<{ telegramID: string; telegramActive: boolean }>
   removeManhwa(userID: string, manhwasID: string[]): Promise<UserManhwa | null>
   getAllManhwas(userID: string): Promise<ManhwaUserManhwa[] | null>
   getManhwasByProfile(userID: string, page?: number): Promise<UserManhwa | null>

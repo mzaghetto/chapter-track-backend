@@ -131,9 +131,15 @@ export class PrismaUserManhwaRepository implements UserManhwaRepository {
     telegramID: string,
     telegramActive: boolean,
   ): Promise<{ telegramID: string; telegramActive: boolean }> {
-    prisma.userManhwa.update({
+    const user = await prisma.userManhwa.findFirst({
       where: {
-        id: userID,
+        user_id: userID,
+      },
+    })
+
+    await prisma.userManhwa.update({
+      where: {
+        id: user?.id,
       },
       data: {
         telegram_id: telegramID,

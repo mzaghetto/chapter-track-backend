@@ -9,6 +9,7 @@ import { addManhwaToUser } from './add-manhwa-to-user'
 import { removeManhwaToUser } from './remove-manhwa-to-user'
 import { userManhwas } from './user-manhwas'
 import { unreadManhwas } from './unread-manhwas'
+import { telegramNotification } from './telegram-notification'
 
 export async function usersRoutes(app: FastifyInstance) {
   app.post('/register', register)
@@ -26,5 +27,11 @@ export async function usersRoutes(app: FastifyInstance) {
     '/user/remove-manhwa',
     { onRequest: [verifyJWT] },
     removeManhwaToUser,
+  )
+
+  app.patch(
+    '/user/telegram-notification',
+    { onRequest: [verifyJWT] },
+    telegramNotification,
   )
 }
