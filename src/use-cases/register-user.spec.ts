@@ -35,9 +35,10 @@ describe('Register User Use Case', () => {
 
     const isPasswordCorrectlyHashed = await compare(
       '123456',
-      user.password_hash,
+      user.password_hash!,
     )
 
+    expect(user.password_hash).toBeTruthy()
     expect(isPasswordCorrectlyHashed).toBe(true)
   })
 
