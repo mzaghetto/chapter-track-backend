@@ -4,6 +4,7 @@
 - [x] It should be possible to obtain a user profile;
 - [x] It should be possible to update the user profile;
 - [x] It should be possible to authenticate;
+- [x] It should be possible to use Google SSO to authenticate;
 
 #### Manhwas
 - [x] It should be possible to register a new manhwa;

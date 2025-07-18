@@ -43,6 +43,7 @@
     "bcryptjs": "2.4.3",
     "dotenv": "16.0.3",
     "fastify": "4.15.0",
+    "google-auth-library": "10.1.0",
     "zod": "3.22.4"
   }
 }
