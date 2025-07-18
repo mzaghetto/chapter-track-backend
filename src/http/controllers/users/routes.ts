@@ -10,10 +10,12 @@ import { removeManhwaToUser } from './remove-manhwa-to-user'
 import { userManhwas } from './user-manhwas'
 import { unreadManhwas } from './unread-manhwas'
 import { telegramNotification } from './telegram-notification'
+import { googleSSO } from './google-sso'
 
 export async function usersRoutes(app: FastifyInstance) {
   app.post('/register', register)
   app.post('/sessions', authenticate)
+  app.post('/sso/google', googleSSO)
 
   app.get('/me', { onRequest: [verifyJWT] }, profile)
   app.patch('/me', { onRequest: [verifyJWT] }, updateProfile)

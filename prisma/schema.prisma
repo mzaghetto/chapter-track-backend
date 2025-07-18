@@ -26,10 +26,11 @@ model Manhwas {
 model Users {
   id            String    @id @default(uuid()) @map("_id")
   name          String?
-  username      String    @unique
-  password_hash String
+  username      String?    @unique
+  password_hash String?
   email         String    @unique
   role          String    @default("user")
+  googleId      String?   @unique
   created_at    DateTime  @default(now())
   updated_at    DateTime?
 

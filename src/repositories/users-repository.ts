@@ -13,4 +13,5 @@ export interface UsersRepository {
     userID: string,
     data: Prisma.UsersUpdateInput,
   ): Promise<Users | null>
+  findByGoogleId(googleId: string): Promise<Users | null>
 }

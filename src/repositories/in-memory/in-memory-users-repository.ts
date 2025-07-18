@@ -5,6 +5,16 @@ import { randomUUID } from 'crypto'
 export class InMemoryUsersRepository implements UsersRepository {
   public items: Users[] = []
 
+  async findByGoogleId(googleId: string): Promise<Users | null> {
+    const user = this.items.find((item) => item.googleId === googleId)
+
+    if (!user) {
+      return null
+    }
+
+    return user
+  }
+
   async findByIDAndUpdate(userID: string, data: Users): Promise<Users | null> {
     const indexOfUser = this.items.findIndex((item) => item.id === userID)
 
@@ -58,6 +68,7 @@ export class InMemoryUsersRepository implements UsersRepository {
       username: data.username,
       email: data.email,
       role: data.role,
+      googleId: data.googleId,
       password_hash: data.password_hash,
       created_at: new Date(),
       updated_at: new Date(),
