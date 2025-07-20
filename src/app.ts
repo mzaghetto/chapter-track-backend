@@ -5,6 +5,8 @@ import { usersRoutes } from './http/controllers/users/routes'
 import fastifyJwt from '@fastify/jwt'
 import fastifyCookie from '@fastify/cookie'
 import { manhwaRoutes } from './http/controllers/manhwa/routes'
+import { providerRoutes } from './http/controllers/providers/routes'
+import { manhwaProviderRoutes } from './http/controllers/manhwa-provider/routes'
 
 export const app = fastify()
 
@@ -19,6 +21,8 @@ app.register(fastifyJwt, {
 app.register(fastifyCookie)
 app.register(usersRoutes)
 app.register(manhwaRoutes)
+app.register(providerRoutes)
+app.register(manhwaProviderRoutes)
 
 app.setErrorHandler((error, _, reply) => {
   if (error instanceof ZodError) {
