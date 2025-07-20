@@ -4,7 +4,7 @@ import { GoogleSSOUseCase } from './google-sso'
 import { InvalidGoogleTokenError } from '@/use-cases/errors/invalid-google-token-error'
 import { UnverifiedGoogleEmailError } from '@/use-cases/errors/unverified-google-email-error'
 import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found'
-import { makeUser } from '@/use-cases/test/make-user'
+import { makeUser } from '@/lib/make-user'
 
 let usersRepository: InMemoryUsersRepository
 let sut: GoogleSSOUseCase

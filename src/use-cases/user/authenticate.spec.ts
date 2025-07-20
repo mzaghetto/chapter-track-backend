@@ -3,7 +3,7 @@ import { hash } from 'bcryptjs'
 import { InMemoryUsersRepository } from '@/repositories/in-memory/in-memory-users-repository'
 import { AuthenticateUseCase } from './authenticate'
 import { InvalidCredentialsError } from '@/use-cases/errors/invalid-credentials-error'
-import { makeUser } from '@/use-cases/test/make-user'
+import { makeUser } from '@/lib/make-user'
 
 let usersRepository: InMemoryUsersRepository
 let sut: AuthenticateUseCase
