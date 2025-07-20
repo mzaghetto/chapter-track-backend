@@ -39,7 +39,14 @@ export class InMemoryProvidersRepository implements ProvidersRepository {
     return provider
   }
 
-  async update(id: bigint, data: Prisma.ProvidersUpdateInput): Promise<Providers | null> {
+  async findAll(): Promise<Providers[]> {
+    return this.items
+  }
+
+  async update(
+    id: bigint,
+    data: Prisma.ProvidersUpdateInput,
+  ): Promise<Providers | null> {
     const providerIndex = this.items.findIndex((item) => item.id === id)
 
     if (providerIndex === -1) {
