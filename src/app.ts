@@ -7,6 +7,7 @@ import fastifyCookie from '@fastify/cookie'
 import { manhwaRoutes } from './http/controllers/manhwa/routes'
 import { providerRoutes } from './http/controllers/providers/routes'
 import { manhwaProviderRoutes } from './http/controllers/manhwa-provider/routes'
+import bigintSerializer from './plugins/bigint-serializer'
 
 export const app = fastify()
 
@@ -19,6 +20,7 @@ app.register(fastifyJwt, {
 })
 
 app.register(fastifyCookie)
+app.register(bigintSerializer)
 app.register(usersRoutes)
 app.register(manhwaRoutes)
 app.register(providerRoutes)

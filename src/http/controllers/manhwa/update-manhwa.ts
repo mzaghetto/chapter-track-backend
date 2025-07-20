@@ -3,7 +3,6 @@ import z from 'zod'
 import { ManhwaAlreadyExistsError } from '@/use-cases/errors/manhwa-already-exists-error'
 import { makeUpdateManhwaUseCase } from '@/use-cases/factories/make-update-manhwa-use-case'
 import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found'
-import { transformManhwaResponse } from '@/utils/bigint-transformer'
 
 export async function updateManhwa(
   request: FastifyRequest,
@@ -41,7 +40,7 @@ export async function updateManhwa(
 
     const { manhwa } = await updateManhwaUseCase.execute({ manhwaID, data })
 
-    return reply.status(201).send({ manhwa: transformManhwaResponse(manhwa) })
+    return reply.status(201).send({ manhwa })
   } catch (error) {
     if (error instanceof ManhwaAlreadyExistsError) {
       return reply.status(409).send({ message: error.message })

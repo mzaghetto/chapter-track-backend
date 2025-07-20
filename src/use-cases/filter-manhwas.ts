@@ -50,13 +50,14 @@ export class FilterManhwaByNameUseCase extends Pageable<manhwaListResponse> {
         manhwaId: manhwa.id,
         manhwaName: manhwa.name,
         coverImage: manhwa.coverImage,
-        lastEpisodeReleased: manhwa.manhwaProviders.length > 0
-          ? Math.max(
-              ...manhwa.manhwaProviders.map(
-                (provider) => provider.lastEpisodeReleased ?? 0,
-              ),
-            )
-          : undefined,
+        lastEpisodeReleased:
+          manhwa.manhwaProviders.length > 0
+            ? Math.max(
+                ...manhwa.manhwaProviders.map(
+                  (provider) => provider.lastEpisodeReleased ?? 0,
+                ),
+              )
+            : undefined,
       }
     })
 

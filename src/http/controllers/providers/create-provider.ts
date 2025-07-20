@@ -1,7 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
 import z from 'zod'
 import { makeCreateProviderUseCase } from '@/use-cases/factories/make-create-provider-use-case'
-import { transformProviderResponse } from '@/utils/bigint-transformer'
 
 export async function createProvider(
   request: FastifyRequest,
@@ -22,9 +21,7 @@ export async function createProvider(
       url,
     })
 
-    return reply
-      .status(201)
-      .send({ provider: transformProviderResponse(provider) })
+    return reply.status(201).send({ provider })
   } catch (error) {
     console.log(error)
     // TODO: Add specific error handling for provider creation

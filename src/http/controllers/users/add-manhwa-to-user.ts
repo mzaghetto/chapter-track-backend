@@ -4,7 +4,6 @@ import { ManhwaAlreadyExistsError } from '@/use-cases/errors/manhwa-already-exis
 import { makeAddManhwaToUserUseCase } from '@/use-cases/factories/make-add-manhwa-to-user-use-case'
 import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found'
 import { UserManhwaStatus } from '@prisma/client'
-import { transformUserManhwaResponse } from '@/utils/bigint-transformer'
 
 export async function addManhwaToUser(
   request: FastifyRequest,
@@ -33,9 +32,7 @@ export async function addManhwaToUser(
       order,
     })
 
-    return reply
-      .status(201)
-      .send({ userManhwa: transformUserManhwaResponse(userManhwa) })
+    return reply.status(201).send({ userManhwa })
   } catch (error) {
     if (error instanceof ResourceNotFoundError) {
       return reply.status(400).send({ message: error.message })

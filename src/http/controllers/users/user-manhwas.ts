@@ -2,7 +2,6 @@ import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found'
 import { makeGetUserManhwasUseCase } from '@/use-cases/factories/make-get-user-manhwas-use-case'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import z from 'zod'
-import { transformUserManhwaResponse } from '@/utils/bigint-transformer'
 
 export async function userManhwas(
   request: FastifyRequest,
@@ -25,7 +24,7 @@ export async function userManhwas(
     })
 
     return reply.status(200).send({
-      userManhwas: userManhwas.map(transformUserManhwaResponse),
+      userManhwas,
       total,
     })
   } catch (error) {

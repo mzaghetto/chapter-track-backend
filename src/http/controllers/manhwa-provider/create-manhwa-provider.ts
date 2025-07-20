@@ -2,7 +2,6 @@ import { FastifyReply, FastifyRequest } from 'fastify'
 import z from 'zod'
 import { makeCreateManhwaProviderUseCase } from '@/use-cases/factories/make-create-manhwa-provider-use-case'
 import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found'
-import { transformManhwaProviderResponse } from '@/utils/bigint-transformer'
 
 export async function createManhwaProvider(
   request: FastifyRequest,
@@ -28,9 +27,7 @@ export async function createManhwaProvider(
       url,
     })
 
-    return reply
-      .status(201)
-      .send({ manhwaProvider: transformManhwaProviderResponse(manhwaProvider) })
+    return reply.status(201).send({ manhwaProvider })
   } catch (error) {
     if (error instanceof ResourceNotFoundError) {
       return reply.status(404).send({ message: error.message })

@@ -3,7 +3,6 @@ import z from 'zod'
 import { Prisma } from '@prisma/client'
 import { makeRegisterManhwaUserUseCase } from '@/use-cases/factories/make-register-manhwa-use-case'
 import { ManhwaAlreadyExistsError } from '@/use-cases/errors/manhwa-already-exists-error'
-import { transformManhwaResponse } from '@/utils/bigint-transformer'
 
 export async function createManhwa(
   request: FastifyRequest,
@@ -33,7 +32,7 @@ export async function createManhwa(
       status,
     })
 
-    return reply.status(201).send({ manhwa: transformManhwaResponse(manhwa) })
+    return reply.status(201).send({ manhwa })
   } catch (error) {
     if (error instanceof ManhwaAlreadyExistsError) {
       return reply.status(409).send({ message: error.message })
