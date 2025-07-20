@@ -1,11 +1,15 @@
 import { UserNotifications, Prisma } from '@prisma/client'
 import { UserNotificationsRepository } from '../user-notifications-repository'
 
-export class InMemoryUserNotificationsRepository implements UserNotificationsRepository {
+export class InMemoryUserNotificationsRepository
+  implements UserNotificationsRepository
+{
   public items: UserNotifications[] = []
   private nextId = 1n
 
-  async create(data: Prisma.UserNotificationsUncheckedCreateInput): Promise<UserNotifications> {
+  async create(
+    data: Prisma.UserNotificationsUncheckedCreateInput,
+  ): Promise<UserNotifications> {
     const userNotification: UserNotifications = {
       id: this.nextId++,
       userId: BigInt(data.userId),
@@ -34,12 +38,19 @@ export class InMemoryUserNotificationsRepository implements UserNotificationsRep
     return this.items.find((item) => item.id === id) ?? null
   }
 
-  async update(id: bigint, data: Prisma.UserNotificationsUpdateInput): Promise<UserNotifications | null> {
+  async update(
+    id: bigint,
+    data: Prisma.UserNotificationsUpdateInput,
+  ): Promise<UserNotifications | null> {
     const index = this.items.findIndex((item) => item.id === id)
     if (index === -1) {
       return null
     }
-    const updatedItem = { ...this.items[index], ...data, updatedAt: new Date() } as UserNotifications
+    const updatedItem = {
+      ...this.items[index],
+      ...data,
+      updatedAt: new Date(),
+    } as UserNotifications
     this.items[index] = updatedItem
     return updatedItem
   }
@@ -53,5 +64,11 @@ export class InMemoryUserNotificationsRepository implements UserNotificationsRep
 
   async findManyByUserId(userId: bigint): Promise<UserNotifications[]> {
     return this.items.filter((item) => item.userId === userId)
+  }
+
+  async findByManhwaId(manhwaId: bigint): Promise<UserNotifications[]> {
+    return this.items.filter(
+      (item) => item.manhwaId === manhwaId && item.isEnabled,
+    )
   }
 }

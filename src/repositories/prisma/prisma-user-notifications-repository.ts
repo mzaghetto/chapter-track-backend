@@ -2,8 +2,12 @@ import { UserNotifications, Prisma } from '@prisma/client'
 import { prisma } from '@/lib/prisma'
 import { UserNotificationsRepository } from '../user-notifications-repository'
 
-export class PrismaUserNotificationsRepository implements UserNotificationsRepository {
-  async create(data: Prisma.UserNotificationsUncheckedCreateInput): Promise<UserNotifications> {
+export class PrismaUserNotificationsRepository
+  implements UserNotificationsRepository
+{
+  async create(
+    data: Prisma.UserNotificationsUncheckedCreateInput,
+  ): Promise<UserNotifications> {
     return prisma.userNotifications.create({ data })
   }
 
@@ -22,7 +26,10 @@ export class PrismaUserNotificationsRepository implements UserNotificationsRepos
     })
   }
 
-  async update(id: bigint, data: Prisma.UserNotificationsUpdateInput): Promise<UserNotifications> {
+  async update(
+    id: bigint,
+    data: Prisma.UserNotificationsUpdateInput,
+  ): Promise<UserNotifications> {
     return prisma.userNotifications.update({
       where: { id },
       data,
@@ -36,6 +43,12 @@ export class PrismaUserNotificationsRepository implements UserNotificationsRepos
   async findManyByUserId(userId: bigint): Promise<UserNotifications[]> {
     return prisma.userNotifications.findMany({
       where: { userId },
+    })
+  }
+
+  async findByManhwaId(manhwaId: bigint): Promise<UserNotifications[]> {
+    return prisma.userNotifications.findMany({
+      where: { manhwaId, isEnabled: true },
     })
   }
 }
