@@ -8,7 +8,7 @@ import { filterManhwa } from './filter-manhwa'
 export async function manhwaRoutes(app: FastifyInstance) {
   app.post(
     '/manhwa/create',
-    { onRequest: [verifyJWT, verifyUserRole('admin')] },
+    { onRequest: [verifyJWT, verifyUserRole('ADMIN')] },
     createManhwa,
   )
 
@@ -16,7 +16,7 @@ export async function manhwaRoutes(app: FastifyInstance) {
 
   app.patch(
     '/manhwa/:manhwaID/update',
-    { onRequest: [verifyJWT, verifyUserRole('admin')] },
+    { onRequest: [verifyJWT, verifyUserRole('ADMIN')] },
     updateManhwa,
   )
 }

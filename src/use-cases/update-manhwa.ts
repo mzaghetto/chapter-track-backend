@@ -4,7 +4,7 @@ import { ManhwasRepository } from '@/repositories/manhwas-repository'
 import { ManhwaAlreadyExistsError } from './errors/manhwa-already-exists-error'
 
 interface UpdateManhwaUseCaseRequest {
-  manhwaID: string
+  manhwaID: bigint
   data: Prisma.ManhwasUpdateInput
 }
 
@@ -20,12 +20,14 @@ export class UpdateManhwaUseCase {
     data,
   }: UpdateManhwaUseCaseRequest): Promise<UpdateManhwaUseCaseResponse> {
     if (data.name) {
-      const manhwaNameAlreadyExists = await this.manhwasRepository.findByName(
-        data.name,
-      )
+      if (typeof data.name === 'string') {
+        const manhwaNameAlreadyExists = await this.manhwasRepository.findByName(
+          data.name,
+        )
 
-      if (manhwaNameAlreadyExists) {
-        throw new ManhwaAlreadyExistsError()
+        if (manhwaNameAlreadyExists) {
+          throw new ManhwaAlreadyExistsError()
+        }
       }
     }
 

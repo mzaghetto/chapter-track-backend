@@ -16,27 +16,25 @@ describe('Get Unread Manhwas Use Case', () => {
     params = {}
 
     await manhwasRepository.create({
-      id: `manhwa-01`,
+      id: BigInt(1),
       name: `Second Life Ranker`,
-      last_episode_released: 2,
-      last_episode_notified: 1,
-      available_read_url: ['Mangatop', 'MCReader', 'Neox'],
-      manhwa_thumb: 'http://www.thum-qualquer.com',
-      url_crawler: 'https://www.mangageko.com/manga/manga-1773/',
-      users_to_notify: [],
+      author: 'Someone',
+      genre: 'Fantasy',
+      coverImage: 'http://example.com/cover.jpg',
+      description: 'A cool story',
+      status: 'ONGOING',
     })
 
     // create several manhwas to pagination
-    for (let i = 1; i <= 22; i++) {
+    for (let i = 2; i <= 23; i++) {
       await manhwasRepository.create({
-        id: `manhwa-${i}`,
+        id: BigInt(i),
         name: `The Gamer ${i}`,
-        last_episode_released: 2,
-        last_episode_notified: 1,
-        available_read_url: ['Mangatop', 'MCReader', 'Neox'],
-        manhwa_thumb: 'http://www.thum-qualquer.com',
-        url_crawler: 'https://www.mangageko.com/manga/manga-1773/',
-        users_to_notify: [],
+        author: 'Someone',
+        genre: 'Fantasy',
+        coverImage: 'http://example.com/cover.jpg',
+        description: 'A cool story',
+        status: 'ONGOING',
       })
     }
   })
@@ -48,9 +46,7 @@ describe('Get Unread Manhwas Use Case', () => {
     })
 
     expect(manhwas.items.length).toEqual(1)
-    expect.objectContaining({
-      manhwaName: 'Second Life Ranker',
-    })
+    expect(manhwas.items[0].manhwaName).toEqual('Second Life Ranker')
   })
 
   it('should be able to pass a limit for create a pagination', async () => {

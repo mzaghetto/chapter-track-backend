@@ -8,48 +8,18 @@ export async function filterManhwa(
   reply: FastifyReply,
 ) {
   const filterManhwaParamsSchema = z.object({
-    page: z
-      .string()
-      .optional()
-      .refine(
-        (value) => {
-          if (value === undefined) {
-            return true
-          }
-          const parsedValue = parseInt(value, 10)
-          return !isNaN(parsedValue)
-        },
-        {
-          message: 'Expected number, received string',
-        },
-      ),
-    limit: z
-      .string()
-      .optional()
-      .refine(
-        (value) => {
-          if (value === undefined) {
-            return true
-          }
-          const parsedValue = parseInt(value, 10)
-          return !isNaN(parsedValue)
-        },
-        {
-          message: 'Expected number, received string',
-        },
-      ),
+    page: z.coerce.number().optional(),
+    limit: z.coerce.number().optional(),
     sort: z.enum(['asc', 'desc']).optional(),
-    manhwaName: z.string(),
+    manhwaName: z.string().optional(),
+    genre: z.string().optional(),
+    status: z.enum(['ONGOING', 'COMPLETED', 'HIATUS']).optional(),
   })
 
-  const { manhwaName, page, limit, sort } = filterManhwaParamsSchema.parse(
-    request.query,
-  )
+  const { manhwaName, page, limit, sort, genre, status } =
+    filterManhwaParamsSchema.parse(request.query)
 
-  const pageNumber = page ? parseInt(page, 10) : undefined
-  const limitNumber = limit ? parseInt(limit, 10) : undefined
-
-  const params = { page: pageNumber, limit: limitNumber, sort }
+  const params = { page, limit, sort }
 
   try {
     const filterManhwaByNameToUserUseCase =
@@ -57,6 +27,8 @@ export async function filterManhwa(
 
     const manhwa = await filterManhwaByNameToUserUseCase.execute({
       nameToFilter: manhwaName,
+      genre,
+      status,
       params,
     })
 

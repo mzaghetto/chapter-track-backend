@@ -15,15 +15,14 @@ describe('Register Manhwa Use Case', () => {
   it('should be able to register a new manhwa', async () => {
     const { manhwa } = await sut.execute({
       name: 'The Gamer',
-      last_episode_released: 429,
-      last_episode_notified: 428,
-      available_read_url: ['Mangatop', 'MCReader', 'Neox'],
-      manhwa_thumb: 'http://www.thum-qualquer.com',
-      url_crawler: 'https://www.mangageko.com/manga/manga-1773/',
-      users_to_notify: [],
+      author: 'Someone',
+      genre: 'Fantasy',
+      coverImage: 'http://example.com/cover.jpg',
+      description: 'A cool story',
+      status: 'ONGOING',
     })
 
-    expect(manhwa.id).toEqual(expect.any(String))
+    expect(manhwa.id).toEqual(expect.any(BigInt))
   })
 
   it('should not be able to register a new manhwa with the same name', async () => {
@@ -31,23 +30,21 @@ describe('Register Manhwa Use Case', () => {
 
     await sut.execute({
       name,
-      last_episode_released: 429,
-      last_episode_notified: 428,
-      available_read_url: ['Mangatop', 'MCReader', 'Neox'],
-      manhwa_thumb: 'http://www.thum-qualquer.com',
-      url_crawler: 'https://www.mangageko.com/manga/manga-1773/',
-      users_to_notify: [],
+      author: 'Someone',
+      genre: 'Fantasy',
+      coverImage: 'http://example.com/cover.jpg',
+      description: 'A cool story',
+      status: 'ONGOING',
     })
 
     await expect(() =>
       sut.execute({
         name,
-        last_episode_released: 429,
-        last_episode_notified: 428,
-        available_read_url: ['Mangatop', 'MCReader', 'Neox'],
-        manhwa_thumb: 'http://www.thum-qualquer.com',
-        url_crawler: 'https://www.mangageko.com/manga/manga-1773/',
-        users_to_notify: [],
+        author: 'Someone',
+        genre: 'Fantasy',
+        coverImage: 'http://example.com/cover.jpg',
+        description: 'A cool story',
+        status: 'ONGOING',
       }),
     ).rejects.toBeInstanceOf(ManhwaAlreadyExistsError)
   })

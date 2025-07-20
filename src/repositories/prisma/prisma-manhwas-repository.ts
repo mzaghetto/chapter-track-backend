@@ -11,7 +11,7 @@ export class PrismaManhwasRepository implements ManhwasRepository {
     return manhwa
   }
 
-  async findByName(name: string): Promise<Prisma.ManhwasCreateInput | null> {
+  async findByName(name: string): Promise<Manhwas | null> {
     const manhwa = await prisma.manhwas.findFirst({
       where: {
         name,
@@ -21,7 +21,13 @@ export class PrismaManhwasRepository implements ManhwasRepository {
     return manhwa
   }
 
-  async filterByName(name: string): Promise<Manhwas[] | null> {
+  async filterByName(name: string): Promise<
+    (Manhwas & {
+      manhwaProviders: {
+        lastEpisodeReleased: number | null
+      }[]
+    })[] | null
+  > {
     const manhwa = await prisma.manhwas.findMany({
       where: {
         name: {
@@ -29,13 +35,16 @@ export class PrismaManhwasRepository implements ManhwasRepository {
           contains: name,
         },
       },
+      include: {
+        manhwaProviders: true,
+      },
     })
 
     return manhwa
   }
 
   findByIDAndUpdate(
-    manhwaID: string,
+    manhwaID: bigint,
     data: Prisma.ManhwasUpdateInput,
   ): Promise<Manhwas | null> {
     const updatedManhwa = prisma.manhwas.update({
@@ -50,17 +59,26 @@ export class PrismaManhwasRepository implements ManhwasRepository {
     return updatedManhwa
   }
 
-  async findByID(manhwaID: string): Promise<Manhwas | null> {
+  async findByID(manhwaID: bigint): Promise<
+    (Manhwas & {
+      manhwaProviders: {
+        lastEpisodeReleased: number | null
+      }[]
+    }) | null
+  > {
     const manhwa = await prisma.manhwas.findFirst({
       where: {
         id: manhwaID,
+      },
+      include: {
+        manhwaProviders: true,
       },
     })
 
     return manhwa
   }
 
-  async findByIDs(manhwasID: string[]): Promise<Manhwas[] | null> {
+  async findByIDs(manhwasID: bigint[]): Promise<Manhwas[] | null> {
     const manhwa = await prisma.manhwas.findMany({
       where: {
         id: {

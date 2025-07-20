@@ -3,13 +3,25 @@ import { Manhwas, Prisma } from '@prisma/client'
 export interface ManhwasRepository {
   create(data: Prisma.ManhwasCreateInput): Promise<Manhwas>
   findByName(
-    name: string | Prisma.StringFieldUpdateOperationsInput,
-  ): Promise<Prisma.ManhwasCreateInput | null>
-  filterByName(name: string): Promise<Manhwas[] | null>
+    name: string,
+  ): Promise<Manhwas | null>
+  filterByName(name: string): Promise<
+    (Manhwas & {
+      manhwaProviders: {
+        lastEpisodeReleased: number | null
+      }[]
+    })[] | null
+  >
   findByIDAndUpdate(
-    manhwaID: string,
+    manhwaID: bigint,
     data: string | Prisma.ManhwasUpdateInput,
   ): Promise<Manhwas | null>
-  findByID(manhwaID: string): Promise<Manhwas | null>
-  findByIDs(manhwasID: string[]): Promise<Manhwas[] | null>
+  findByID(manhwaID: bigint): Promise<
+    (Manhwas & {
+      manhwaProviders: {
+        lastEpisodeReleased: number | null
+      }[]
+    }) | null
+  >
+  findByIDs(manhwasID: bigint[]): Promise<Manhwas[] | null>
 }

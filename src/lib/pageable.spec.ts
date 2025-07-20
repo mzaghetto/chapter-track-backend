@@ -8,10 +8,11 @@ import {
 } from './pageable'
 
 describe('Pageable', () => {
-  let pageable: Pageable<any>
+  class ConcretePageable extends Pageable<any> {}
+  let pageable: ConcretePageable
 
   beforeEach(() => {
-    pageable = new Pageable<any>()
+    pageable = new ConcretePageable()
   })
 
   describe('buildPage', () => {

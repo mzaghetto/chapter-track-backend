@@ -2,27 +2,31 @@ import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found'
 import { makeGetUserManhwasUseCase } from '@/use-cases/factories/make-get-user-manhwas-use-case'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import z from 'zod'
+import { transformUserManhwaResponse } from '@/utils/bigint-transformer'
 
 export async function userManhwas(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
   const userManhwasBodySchema = z.object({
-    page: z.number().optional(),
+    page: z.coerce.number().optional().default(1),
+    pageSize: z.coerce.number().optional().default(20),
   })
 
-  const { page } = userManhwasBodySchema.parse(request.params)
+  const { page, pageSize } = userManhwasBodySchema.parse(request.query)
 
   try {
     const getManhwasOfUser = makeGetUserManhwasUseCase()
 
-    const { userManhwa } = await getManhwasOfUser.execute({
-      userID: request.user.sub,
+    const { userManhwas, total } = await getManhwasOfUser.execute({
+      userId: BigInt(request.user.sub),
       page,
+      pageSize,
     })
 
     return reply.status(200).send({
-      userManhwa,
+      userManhwas: userManhwas.map(transformUserManhwaResponse),
+      total,
     })
   } catch (error) {
     if (error instanceof ResourceNotFoundError) {

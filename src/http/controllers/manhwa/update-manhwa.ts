@@ -3,50 +3,45 @@ import z from 'zod'
 import { ManhwaAlreadyExistsError } from '@/use-cases/errors/manhwa-already-exists-error'
 import { makeUpdateManhwaUseCase } from '@/use-cases/factories/make-update-manhwa-use-case'
 import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found'
+import { transformManhwaResponse } from '@/utils/bigint-transformer'
 
 export async function updateManhwa(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
   const updateManhwaParamsSchema = z.object({
-    manhwaID: z.string().uuid(),
+    manhwaID: z.coerce.bigint(),
   })
 
   const updateManhwaBodySchema = z.object({
     name: z.string().optional(),
-    last_episode_released: z.number().optional(),
-    last_episode_notified: z.number().optional(),
-    available_read_url: z.array(z.string()).optional(),
-    manhwa_thumb: z.string().optional(),
-    url_crawler: z.string().optional(),
+    author: z.string().optional().nullable(),
+    genre: z.any().optional().nullable(),
+    coverImage: z.string().optional().nullable(),
+    description: z.string().optional().nullable(),
+    status: z.enum(['ONGOING', 'COMPLETED', 'HIATUS']).optional().nullable(),
   })
 
   const { manhwaID } = updateManhwaParamsSchema.parse(request.params)
 
-  const {
-    name,
-    last_episode_released,
-    last_episode_notified,
-    available_read_url,
-    manhwa_thumb,
-    url_crawler,
-  } = updateManhwaBodySchema.parse(request.body)
+  const { name, author, genre, coverImage, description, status } =
+    updateManhwaBodySchema.parse(request.body)
 
   try {
     const updateManhwaUseCase = makeUpdateManhwaUseCase()
 
     const data = {
       name,
-      last_episode_released,
-      last_episode_notified,
-      available_read_url,
-      manhwa_thumb,
-      url_crawler,
+      author,
+      genre,
+      coverImage,
+      description,
+      status,
     }
 
     const { manhwa } = await updateManhwaUseCase.execute({ manhwaID, data })
 
-    return reply.status(201).send({ manhwa })
+    return reply.status(201).send({ manhwa: transformManhwaResponse(manhwa) })
   } catch (error) {
     if (error instanceof ManhwaAlreadyExistsError) {
       return reply.status(409).send({ message: error.message })

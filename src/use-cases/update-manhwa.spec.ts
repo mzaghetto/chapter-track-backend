@@ -1,5 +1,6 @@
 import { expect, describe, it, beforeEach } from 'vitest'
 import { InMemoryManhwasRepository } from '@/repositories/in-memory/in-memory-manhwas-repository'
+import { ManhwaStatus } from '@prisma/client'
 import { UpdateManhwaUseCase } from './update-manhwa'
 import { ManhwaAlreadyExistsError } from './errors/manhwa-already-exists-error'
 import { ResourceNotFoundError } from './errors/resource-not-found'
@@ -13,14 +14,13 @@ describe('Update Manhwa Use Case', () => {
     sut = new UpdateManhwaUseCase(manhwasRepository)
 
     await manhwasRepository.create({
-      id: 'manhwa-01',
+      id: BigInt(1),
       name: 'The Gamer',
-      last_episode_released: 429,
-      last_episode_notified: 428,
-      available_read_url: ['Mangatop', 'MCReader', 'Neox'],
-      manhwa_thumb: 'http://www.thum-qualquer.com',
-      url_crawler: 'https://www.mangageko.com/manga/manga-1773/',
-      users_to_notify: [],
+      author: 'Someone',
+      genre: 'Fantasy',
+      coverImage: 'http://example.com/cover.jpg',
+      description: 'A cool story',
+      status: 'ONGOING',
     })
   })
 
@@ -30,7 +30,7 @@ describe('Update Manhwa Use Case', () => {
     }
 
     const { manhwa } = await sut.execute({
-      manhwaID: 'manhwa-01',
+      manhwaID: BigInt(1),
       data,
     })
 
@@ -44,7 +44,7 @@ describe('Update Manhwa Use Case', () => {
 
     await expect(() =>
       sut.execute({
-        manhwaID: 'non-existing-id',
+        manhwaID: BigInt(99),
         data,
       }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError)
@@ -52,40 +52,26 @@ describe('Update Manhwa Use Case', () => {
 
   it('should be able to update a last episode released', async () => {
     const data = {
-      last_episode_released: 430,
+      status: ManhwaStatus.COMPLETED,
     }
 
     const { manhwa } = await sut.execute({
-      manhwaID: 'manhwa-01',
+      manhwaID: BigInt(1),
       data,
     })
 
-    expect(manhwa.last_episode_released).toEqual(data.last_episode_released)
-  })
-
-  it('should be able to update a last episode notified', async () => {
-    const data = {
-      last_episode_notified: 429,
-    }
-
-    const { manhwa } = await sut.execute({
-      manhwaID: 'manhwa-01',
-      data,
-    })
-
-    expect(manhwa.last_episode_released).toEqual(data.last_episode_notified)
+    expect(manhwa.status).toEqual(data.status)
   })
 
   it('should not be possible to update a manhwa name with the same name as a registered manhwa', async () => {
     await manhwasRepository.create({
-      id: 'manhwa-02',
+      id: BigInt(2),
       name: 'The Hero',
-      last_episode_released: 429,
-      last_episode_notified: 428,
-      available_read_url: ['Mangatop', 'MCReader', 'Neox'],
-      manhwa_thumb: 'http://www.thum-qualquer.com',
-      url_crawler: 'https://www.mangageko.com/manga/manga-1773/',
-      users_to_notify: [],
+      author: 'Someone',
+      genre: 'Fantasy',
+      coverImage: 'http://example.com/cover.jpg',
+      description: 'A cool story',
+      status: 'ONGOING',
     })
 
     const data = {
@@ -94,7 +80,7 @@ describe('Update Manhwa Use Case', () => {
 
     await expect(() =>
       sut.execute({
-        manhwaID: 'manhwa-02',
+        manhwaID: BigInt(2),
         data,
       }),
     ).rejects.toBeInstanceOf(ManhwaAlreadyExistsError)

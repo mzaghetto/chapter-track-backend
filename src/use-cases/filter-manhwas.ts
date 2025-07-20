@@ -3,14 +3,17 @@ import { ResourceNotFoundError } from './errors/resource-not-found'
 import { Page, Pageable } from '@/lib/pageable'
 
 interface FilterManhwasUseCaseRequest {
-  nameToFilter: string
+  nameToFilter?: string
+  genre?: string
+  status?: 'ONGOING' | 'COMPLETED' | 'HIATUS'
   params: Page
 }
 
 interface manhwaListResponse {
-  manhwaId: string
+  manhwaId: bigint
   manhwaName: string
-  lastEpisodeReleased: number
+  coverImage: string | null | undefined
+  lastEpisodeReleased?: number
 }
 
 interface FilterManhwaByNameUseCaseReponse {
@@ -35,7 +38,7 @@ export class FilterManhwaByNameUseCase extends Pageable<manhwaListResponse> {
     params,
   }: FilterManhwasUseCaseRequest): Promise<FilterManhwaByNameUseCaseReponse> {
     const manhwaFilteredByName = await this.manhwasRepository.filterByName(
-      nameToFilter,
+      nameToFilter ?? '',
     )
 
     if (!manhwaFilteredByName || manhwaFilteredByName.length === 0) {
@@ -46,7 +49,14 @@ export class FilterManhwaByNameUseCase extends Pageable<manhwaListResponse> {
       return {
         manhwaId: manhwa.id,
         manhwaName: manhwa.name,
-        lastEpisodeReleased: manhwa.last_episode_released,
+        coverImage: manhwa.coverImage,
+        lastEpisodeReleased: manhwa.manhwaProviders.length > 0
+          ? Math.max(
+              ...manhwa.manhwaProviders.map(
+                (provider) => provider.lastEpisodeReleased ?? 0,
+              ),
+            )
+          : undefined,
       }
     })
 
