@@ -5,13 +5,19 @@ export async function profile(request: FastifyRequest, reply: FastifyReply) {
   const getUserProfile = makeGetUserProfileUseCase()
 
   const { user } = await getUserProfile.execute({
-    userID: request.user.sub,
+    userID: BigInt(request.user.sub),
   })
 
   return reply.status(201).send({
     user: {
-      ...user,
-      password_hash: undefined,
+      name: user.name,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+      preferences: user.preferences,
+      lastLogin: user.lastLogin,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
     },
   })
 }

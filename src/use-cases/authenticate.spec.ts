@@ -1,5 +1,6 @@
 import { expect, describe, it, beforeEach } from 'vitest'
 import { hash } from 'bcryptjs'
+import { Prisma } from '@prisma/client'
 import { InMemoryUsersRepository } from '@/repositories/in-memory/in-memory-users-repository'
 import { AuthenticateUseCase } from './authenticate'
 import { InvalidCredentialsError } from './errors/invalid-credentials-error'
@@ -26,7 +27,7 @@ describe('Authenticate Use Case', () => {
       password: '123456',
     })
 
-    expect(user.id).toEqual(expect.any(String))
+    expect(user.id).toEqual(expect.any(BigInt))
   })
 
   it('should not be able to authenticate with wrong email', async () => {

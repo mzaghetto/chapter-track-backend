@@ -5,9 +5,9 @@ import z from 'zod'
 import { TelegramIDRequired } from '@/use-cases/errors/telegram-id-required'
 
 interface TelegramNotificationData {
-  userID: string
+  userId: bigint
   activate: boolean
-  telegramID?: string // Propriedade opcional
+  telegramId?: string
 }
 
 export async function telegramNotification(
@@ -15,11 +15,11 @@ export async function telegramNotification(
   reply: FastifyReply,
 ) {
   const telegramNotificationBodySchema = z.object({
-    telegramID: z.string().optional(),
+    telegramId: z.string().optional(),
     activate: z.boolean(),
   })
 
-  const { telegramID, activate } = telegramNotificationBodySchema.parse(
+  const { telegramId, activate } = telegramNotificationBodySchema.parse(
     request.body,
   )
 
@@ -27,16 +27,16 @@ export async function telegramNotification(
     const telegramNotificationUseCase = makeTelegramNotificationUseCase()
 
     const telegramNotificationData: TelegramNotificationData = {
-      userID: request.user.sub,
+      userId: BigInt(request.user.sub),
       activate,
     }
 
-    if (telegramID) telegramNotificationData.telegramID = telegramID
+    if (telegramId) telegramNotificationData.telegramId = telegramId
 
     const telegramNotificationResponse =
       await telegramNotificationUseCase.execute({
-        userID: request.user.sub,
-        telegramID,
+        userId: BigInt(request.user.sub),
+        telegramId,
         activate,
       })
 

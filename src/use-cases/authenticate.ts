@@ -35,6 +35,10 @@ export class AuthenticateUseCase {
       throw new InvalidCredentialsError()
     }
 
+    await this.usersRepository.findByIDAndUpdate(user.id, {
+      lastLogin: new Date(),
+    })
+
     return {
       user,
     }

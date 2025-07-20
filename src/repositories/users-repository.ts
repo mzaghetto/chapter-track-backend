@@ -5,13 +5,18 @@ export interface UsersRepository {
   findByEmail(
     email: string | Prisma.StringFieldUpdateOperationsInput,
   ): Promise<Users | null>
-  findByID(userID: string): Promise<Users | null>
+  findByID(userID: bigint): Promise<Users | null>
   findByUsername(
     username: string | Prisma.StringFieldUpdateOperationsInput,
   ): Promise<Users | null>
   findByIDAndUpdate(
-    userID: string,
+    userID: bigint,
     data: Prisma.UsersUpdateInput,
   ): Promise<Users | null>
   findByGoogleId(googleId: string): Promise<Users | null>
+  updateTelegram(
+    userId: bigint,
+    telegramId: string | null,
+    telegramActive: boolean,
+  ): Promise<Users | null>
 }

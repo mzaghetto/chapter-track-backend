@@ -1,29 +1,27 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
 import z from 'zod'
 import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found'
-import { makeRemoveManhwaToUserUseCase } from '@/use-cases/factories/make-remove-manhwa-to-user-use-case'
+import { makeRemoveManhwaFromUserUseCase } from '@/use-cases/factories/make-remove-manhwa-from-user-use-case'
 
 export async function removeManhwaToUser(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
   const removeManhwaToUserBodySchema = z.object({
-    manhwa_id: z.string().array(),
+    manhwaId: z.coerce.bigint(),
   })
 
-  const { manhwa_id } = removeManhwaToUserBodySchema.parse(request.body)
+  const { manhwaId } = removeManhwaToUserBodySchema.parse(request.body)
 
   try {
-    const removeManhwaToUserUseCase = makeRemoveManhwaToUserUseCase()
+    const removeManhwaFromUserUseCase = makeRemoveManhwaFromUserUseCase()
 
-    const manhwasID = manhwa_id
-
-    const { userManhwa } = await removeManhwaToUserUseCase.execute({
-      user_id: request.user.sub,
-      manhwasID,
+    await removeManhwaFromUserUseCase.execute({
+      userId: BigInt(request.user.sub),
+      manhwaId,
     })
 
-    return reply.status(200).send({ userManhwa })
+    return reply.status(204).send()
   } catch (error) {
     if (error instanceof ResourceNotFoundError) {
       return reply.status(400).send({ message: error.message })

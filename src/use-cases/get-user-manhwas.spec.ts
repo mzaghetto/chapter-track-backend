@@ -16,85 +16,80 @@ describe('Get User Manhwas Use Case', () => {
     usersRepository = new InMemoryUsersRepository()
     userManhwaRepository = new InMemoryUserManhwaRepository()
     manhwasRepository = new InMemoryManhwasRepository()
-    sut = new GetUserManhwasUseCase(userManhwaRepository)
+    sut = new GetUserManhwasUseCase(userManhwaRepository, usersRepository)
 
     await usersRepository.create({
-      id: 'user-01',
+      id: BigInt(1),
       name: 'Jhon Doe',
       username: 'jhondoe',
       email: 'johndoe@example.com',
       password_hash: await hash('123456', 6),
-      role: 'user',
-      created_at: new Date(),
-      updated_at: null,
-    })
-
-    await userManhwaRepository.create({
-      id: 'user-manhwa-01',
-      user_id: 'user-01',
-      manhwas: [],
-      telegram_id: null,
-      telegram_active: false,
+      role: 'USER',
+      createdAt: new Date(),
+      
     })
 
     // create several manhwas to pagination
     for (let i = 1; i <= 22; i++) {
       await manhwasRepository.create({
-        id: `manhwa-${i}`,
+        id: BigInt(i),
         name: `The Gamer ${i}`,
-        last_episode_released: 429,
-        last_episode_notified: 428,
-        available_read_url: ['Mangatop', 'MCReader', 'Neox'],
-        manhwa_thumb: 'http://www.thum-qualquer.com',
-        url_crawler: 'https://www.mangageko.com/manga/manga-1773/',
-        users_to_notify: [],
+        author: 'Someone',
+        genre: 'Fantasy',
+        coverImage: 'http://example.com/cover.jpg',
+        description: 'A cool story',
+        status: 'ONGOING',
       })
     }
 
     // add several manhwas to pagination
     for (let i = 1; i <= 22; i++) {
-      await userManhwaRepository.addManhwa('user-01', {
-        manhwa_id: `manhwa-${i}`,
-        manhwa_position: 0,
-        last_episode_read: 0,
-        read_url: ['https://www.mangageko.com/manga/manga-1773/'],
-        notify_telegram: false,
-        notification_website: true,
+      await userManhwaRepository.create({
+        userId: BigInt(1),
+        manhwaId: BigInt(i),
+        order: i - 1,
+        lastEpisodeRead: 0,
+        status: 'READING',
       })
     }
   })
 
   it('should be able to get all manhwas of user profile', async () => {
-    const { userManhwa } = await sut.execute({
-      userID: 'user-01',
+    const { userManhwas } = await sut.execute({
+      userId: BigInt(1),
       page: 1,
+      pageSize: 20,
     })
 
-    expect(userManhwa.manhwas.length).toEqual(20)
+    expect(userManhwas.length).toEqual(20)
   })
 
   it('should be able to get page 2 manhwas of user profile', async () => {
-    await sut.execute({
-      userID: 'user-01',
+    const { userManhwas } = await sut.execute({
+      userId: BigInt(1),
       page: 2,
+      pageSize: 20,
     })
 
-    expect.objectContaining({ name: 'The Gamer 21' })
+    expect(userManhwas[0].manhwaId).toEqual(BigInt(21))
   })
 
   it('should be able to get manhwas of a user without page in body request', async () => {
-    await sut.execute({
-      userID: 'user-01',
+    const { userManhwas } = await sut.execute({
+      userId: BigInt(1),
+      page: 1,
+      pageSize: 20,
     })
 
-    expect.objectContaining({ name: 'The Gamer 21' })
+    expect(userManhwas.length).toEqual(20)
   })
 
   it('should not be able to get manhwas of user profile with wrong id', async () => {
-    await expect(() =>
+    await expect(async () =>
       sut.execute({
-        userID: 'non-existing-id',
+        userId: BigInt(999),
         page: 1,
+        pageSize: 20,
       }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError)
   })

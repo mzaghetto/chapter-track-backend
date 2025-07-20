@@ -3,7 +3,7 @@ import { Users } from '@prisma/client'
 import { ResourceNotFoundError } from './errors/resource-not-found'
 
 interface GetUserProfileCaseRequest {
-  userID: string
+  userID: bigint
 }
 
 interface GetUserProfileCaseResponse {

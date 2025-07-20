@@ -3,7 +3,7 @@ import z from 'zod'
 import { EmailAlreadyExistsError } from '@/use-cases/errors/email-already-exists-error'
 import { makeRegisterUserUseCase } from '@/use-cases/factories/make-register-use-case'
 import { UsernameAlreadyExistsError } from '@/use-cases/errors/username-already-exists-error'
-import { makeRegisterUserManhwaUseCase } from '@/use-cases/factories/make-register-user-manhwa-use-case'
+
 
 export async function register(request: FastifyRequest, reply: FastifyReply) {
   const registerBodySchema = z.object({
@@ -19,8 +19,6 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
 
   try {
     const registerUserUseCase = makeRegisterUserUseCase()
-    const registerUserManhwaUseCase = makeRegisterUserManhwaUseCase()
-
     const {
       user: { id },
     } = await registerUserUseCase.execute({
@@ -28,12 +26,6 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
       username,
       email,
       password,
-    })
-
-    await registerUserManhwaUseCase.execute({
-      user_id: id,
-      manhwas: [],
-      telegram_id: null,
     })
   } catch (error) {
     if (error instanceof EmailAlreadyExistsError) {

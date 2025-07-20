@@ -24,10 +24,8 @@ export async function authenticate(
         role: user.role,
       },
       {
-        sign: {
-          sub: user.id,
-          expiresIn: '10m',
-        },
+        sub: user.id.toString(),
+        expiresIn: '10m',
       },
     )
 
@@ -36,10 +34,8 @@ export async function authenticate(
         role: user.role,
       },
       {
-        sign: {
-          sub: user.id,
-          expiresIn: '7d',
-        },
+        sub: user.id.toString(),
+        expiresIn: '7d',
       },
     )
 

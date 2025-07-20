@@ -10,25 +10,35 @@ export async function updateProfile(
     name: z.string().optional(),
     username: z.string().optional(),
     email: z.string().email().optional(),
+    preferences: z.any().optional(),
   })
 
-  const { name, username, email } = registerBodySchema.parse(request.body)
+  const { name, username, email, preferences } = registerBodySchema.parse(
+    request.body,
+  )
 
   const updateUserProfile = makeUpdateUserProfileUseCase()
 
   const { user } = await updateUserProfile.execute({
-    userID: request.user.sub,
+    userID: BigInt(request.user.sub),
     data: {
       name,
       username,
       email,
+      preferences,
     },
   })
 
   return reply.status(201).send({
     user: {
-      ...user,
-      password_hash: undefined,
+      name: user.name,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+      preferences: user.preferences,
+      lastLogin: user.lastLogin,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
     },
   })
 }

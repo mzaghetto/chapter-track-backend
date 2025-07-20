@@ -51,6 +51,8 @@ export class GoogleSSOUseCase {
           name: payload.name!,
           email: payload.email!,
           googleId: payload.sub,
+          username: payload.email!,
+          password_hash: 'google-sso-placeholder',
         })
       } else {
         const updatedUser = await this.usersRepository.findByIDAndUpdate(

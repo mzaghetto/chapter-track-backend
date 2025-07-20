@@ -6,7 +6,7 @@ import { EmailAlreadyExistsError } from './errors/email-already-exists-error'
 import { UsernameAlreadyExistsError } from './errors/username-already-exists-error'
 
 interface UpdateUserProfileCaseRequest {
-  userID: string
+  userID: bigint
   data: Prisma.UsersUpdateInput
 }
 

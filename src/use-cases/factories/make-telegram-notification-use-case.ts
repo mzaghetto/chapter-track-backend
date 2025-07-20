@@ -1,10 +1,10 @@
 import { TelegramNotificationUseCase } from '../telegram-notification-status'
-import { PrismaUserManhwaRepository } from '@/repositories/prisma/prisma-user-manhwa-repository'
+import { PrismaUsersRepository } from '@/repositories/prisma/prisma-users-repository'
 
 export function makeTelegramNotificationUseCase() {
-  const userManhwaRepository = new PrismaUserManhwaRepository()
+  const usersRepository = new PrismaUsersRepository()
   const telegramNotificationUseCase = new TelegramNotificationUseCase(
-    userManhwaRepository,
+    usersRepository,
   )
 
   return telegramNotificationUseCase

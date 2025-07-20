@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma'
 
 export class PrismaUsersRepository implements UsersRepository {
   async findByGoogleId(googleId: string): Promise<Users | null> {
-    const user = await prisma.users.findUnique({
+    const user = await prisma.users.findFirst({
       where: {
         googleId,
       },
@@ -13,10 +13,10 @@ export class PrismaUsersRepository implements UsersRepository {
     return user
   }
 
-  findByUsername(username: string): Promise<Users | null> {
+  findByUsername(username: string | Prisma.StringFieldUpdateOperationsInput): Promise<Users | null> {
     const user = prisma.users.findUnique({
       where: {
-        username,
+        username: username.toString(),
       },
     })
 
@@ -24,7 +24,7 @@ export class PrismaUsersRepository implements UsersRepository {
   }
 
   findByIDAndUpdate(
-    userID: string,
+    userID: bigint,
     data: Prisma.UsersUpdateInput,
   ): Promise<Users | null> {
     const updatedUser = prisma.users.update({
@@ -33,14 +33,13 @@ export class PrismaUsersRepository implements UsersRepository {
       },
       data: {
         ...data,
-        updated_at: new Date(),
       },
     })
 
     return updatedUser
   }
 
-  findByID(id: string) {
+  findByID(id: bigint) {
     const user = prisma.users.findUnique({
       where: {
         id,
@@ -66,5 +65,18 @@ export class PrismaUsersRepository implements UsersRepository {
     })
 
     return user
+  }
+
+  async updateTelegram(userId: bigint, telegramId: string | null, telegramActive: boolean): Promise<Users | null> {
+    const updatedUser = await prisma.users.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        telegramId,
+        telegramActive,
+      },
+    })
+    return updatedUser
   }
 }

@@ -1,6 +1,5 @@
-import { Users } from '@prisma/client'
+import { Users, Prisma } from '@prisma/client'
 import { UsersRepository } from '../users-repository'
-import { randomUUID } from 'crypto'
 
 export class InMemoryUsersRepository implements UsersRepository {
   public items: Users[] = []
@@ -15,7 +14,7 @@ export class InMemoryUsersRepository implements UsersRepository {
     return user
   }
 
-  async findByIDAndUpdate(userID: string, data: Users): Promise<Users | null> {
+  async findByIDAndUpdate(userID: bigint, data: Prisma.UsersUpdateInput): Promise<Users | null> {
     const indexOfUser = this.items.findIndex((item) => item.id === userID)
 
     if (indexOfUser === -1) {
@@ -25,13 +24,14 @@ export class InMemoryUsersRepository implements UsersRepository {
     this.items[indexOfUser] = {
       ...this.items[indexOfUser],
       ...data,
-      updated_at: new Date(),
-    }
+      id: userID,
+      updatedAt: new Date(),
+    } as Users
 
     return Promise.resolve(this.items[indexOfUser])
   }
 
-  async findByID(userID: string): Promise<Users | null> {
+  async findByID(userID: bigint): Promise<Users | null> {
     const user = this.items.find((item) => item.id === userID)
 
     if (!user) {
@@ -61,21 +61,44 @@ export class InMemoryUsersRepository implements UsersRepository {
     return Promise.resolve(user)
   }
 
-  async create(data: Users): Promise<Users> {
+  async create(data: Prisma.UsersCreateInput): Promise<Users> {
     const user = {
-      id: data.id ?? randomUUID(),
+      id: BigInt(this.items.length + 1),
       name: data.name,
       username: data.username,
       email: data.email,
-      role: data.role,
-      googleId: data.googleId,
+      role: data.role ?? 'USER',
+      googleId: data.googleId ?? null,
       password_hash: data.password_hash,
-      created_at: new Date(),
-      updated_at: new Date(),
-    }
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      preferences: data.preferences ?? null,
+      lastLogin: data.lastLogin ?? null,
+      resetPasswordToken: data.resetPasswordToken ?? null,
+      resetPasswordExpires: data.resetPasswordExpires ?? null,
+      telegramId: data.telegramId ?? null,
+      telegramActive: data.telegramActive ?? false,
+    } as Users
 
     this.items.push(user)
 
     return Promise.resolve(user)
+  }
+
+  async updateTelegram(userId: bigint, telegramId: string | null, telegramActive: boolean): Promise<Users | null> {
+    const indexOfUser = this.items.findIndex((item) => item.id === userId)
+
+    if (indexOfUser === -1) {
+      return Promise.resolve(null)
+    }
+
+    this.items[indexOfUser] = {
+      ...this.items[indexOfUser],
+      telegramId,
+      telegramActive,
+      updatedAt: new Date(),
+    } as Users
+
+    return Promise.resolve(this.items[indexOfUser])
   }
 }

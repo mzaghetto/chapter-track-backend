@@ -1,18 +1,22 @@
-import { Users } from '@prisma/client'
-import { randomUUID } from 'crypto'
+import { Users, Role, Prisma } from '@prisma/client'
 
-export function makeUser(override: Partial<Users> = {}): Users {
-  const user: Users = {
-    id: override.id ?? randomUUID(),
+let userId = 1
+
+export function makeUser(override: Partial<Prisma.UsersCreateInput> = {}): Prisma.UsersCreateInput {
+  const user: Prisma.UsersCreateInput = {
+    id: override.id ?? BigInt(userId++),
     name: override.name ?? 'John Doe',
-    email: override.email ?? `user-${randomUUID()}@example.com`,
-    username: override.username ?? `johndoe-${randomUUID()}`,
-    password_hash:
-      'password_hash' in override ? override.password_hash ?? null : '123456',
+    email: override.email ?? `user-${Math.random()}@example.com`,
+    username: override.username ?? `johndoe-${Math.random()}`,
+    password_hash: override.password_hash ?? '123456',
     googleId: override.googleId ?? null,
-    role: override.role ?? 'user',
-    created_at: override.created_at ?? new Date(),
-    updated_at: override.updated_at ?? null,
+    role: override.role ?? Role.USER,
+    preferences: override.preferences === null ? Prisma.JsonNull : override.preferences ?? undefined,
+    lastLogin: override.lastLogin ?? null,
+    resetPasswordToken: override.resetPasswordToken ?? null,
+    resetPasswordExpires: override.resetPasswordExpires ?? null,
+    createdAt: override.createdAt ?? new Date(),
+    updatedAt: override.updatedAt ?? new Date(),
   }
 
   return user

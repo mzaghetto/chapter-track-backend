@@ -1,15 +1,19 @@
+import { UserManhwa, UserManhwaStatus } from '@prisma/client'
 import { UserManhwaRepository } from '@/repositories/user-manhwa-repository'
 import { UsersRepository } from '@/repositories/users-repository'
-import { UserManhwa } from '@prisma/client'
 import { ResourceNotFoundError } from './errors/resource-not-found'
 
 interface RegisterUserManhwaUseCaseRequest {
-  user_id: string
-  manhwas: []
-  telegram_id: string | null
+  userId: bigint
+  manhwaId: bigint
+  providerId?: bigint | null
+  status?: UserManhwaStatus
+  lastEpisodeRead?: number | null
+  lastNotifiedEpisode?: number | null
+  order: number
 }
 
-interface RegisterUserManhwaUseCaseReponse {
+interface RegisterUserManhwaUseCaseResponse {
   userManhwa: UserManhwa
 }
 
@@ -20,20 +24,28 @@ export class RegisterUserManhwaUseCase {
   ) {}
 
   async execute({
-    user_id,
-    manhwas,
-    telegram_id,
-  }: RegisterUserManhwaUseCaseRequest): Promise<RegisterUserManhwaUseCaseReponse> {
-    const userExists = await this.usersRepository.findByID(user_id)
+    userId,
+    manhwaId,
+    providerId,
+    status,
+    lastEpisodeRead,
+    lastNotifiedEpisode,
+    order,
+  }: RegisterUserManhwaUseCaseRequest): Promise<RegisterUserManhwaUseCaseResponse> {
+    const userExists = await this.usersRepository.findByID(userId)
 
     if (!userExists) {
       throw new ResourceNotFoundError()
     }
 
     const userManhwa = await this.userManhwaRepository.create({
-      user_id,
-      manhwas,
-      telegram_id,
+      userId,
+      manhwaId,
+      providerId,
+      status: status ?? UserManhwaStatus.READING,
+      lastEpisodeRead,
+      lastNotifiedEpisode,
+      order,
     })
 
     return {

@@ -16,33 +16,33 @@ describe('Register User Manhwa Use Case', () => {
     sut = new RegisterUserManhwaUseCase(userManhwaRepository, usersRepository)
 
     await usersRepository.create({
-      id: 'user-01',
+      id: BigInt(1),
       name: 'Jhon Doe',
       username: 'jhondoe',
       email: 'johndoe@example.com',
       password_hash: await hash('123456', 6),
-      role: 'user',
-      created_at: new Date(),
-      updated_at: null,
+      role: 'USER',
+      createdAt: new Date(),
+      
     })
   })
 
   it('should be able to register a user manhwa', async () => {
     const { userManhwa } = await sut.execute({
-      user_id: 'user-01',
-      manhwas: [],
-      telegram_id: null,
+      userId: BigInt(1),
+      manhwaId: BigInt(1),
+      order: 1,
     })
 
-    expect(userManhwa.user_id).toEqual('user-01')
+    expect(userManhwa.userId).toEqual(BigInt(1))
   })
 
   it('should not be able to register a user manhwa for a user if a valid user is not assigned.', async () => {
     await expect(() =>
       sut.execute({
-        user_id: '123',
-        manhwas: [],
-        telegram_id: null,
+        userId: BigInt(99),
+        manhwaId: BigInt(1),
+        order: 1,
       }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError)
   })

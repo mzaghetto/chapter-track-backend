@@ -1,34 +1,45 @@
+import { UserManhwaRepository } from '@/repositories/user-manhwa-repository'
+import { UsersRepository } from '@/repositories/users-repository'
 import { UserManhwa } from '@prisma/client'
 import { ResourceNotFoundError } from './errors/resource-not-found'
-import { UserManhwaRepository } from '@/repositories/user-manhwa-repository'
 
-interface GetUserManhwasCaseRequest {
-  userID: string
-  page?: number
+interface GetUserManhwasUseCaseRequest {
+  userId: bigint
+  page: number
+  pageSize: number
 }
 
-interface GetUserManhwasCaseResponse {
-  userManhwa: UserManhwa
+interface GetUserManhwasUseCaseResponse {
+  userManhwas: UserManhwa[]
+  total: number
 }
 
 export class GetUserManhwasUseCase {
-  constructor(private userManhwaRepository: UserManhwaRepository) {}
+  constructor(
+    private userManhwaRepository: UserManhwaRepository,
+    private usersRepository: UsersRepository,
+  ) {}
 
   async execute({
-    userID,
+    userId,
     page,
-  }: GetUserManhwasCaseRequest): Promise<GetUserManhwasCaseResponse> {
-    const userManhwa = await this.userManhwaRepository.getManhwasByProfile(
-      userID,
-      page,
-    )
-
-    if (!userManhwa) {
+    pageSize,
+  }: GetUserManhwasUseCaseRequest): Promise<GetUserManhwasUseCaseResponse> {
+    const user = await this.usersRepository.findByID(userId)
+    if (!user) {
       throw new ResourceNotFoundError()
     }
 
+    const userManhwas = await this.userManhwaRepository.findByUserId(
+      userId,
+      page,
+      pageSize,
+    )
+    const total = await this.userManhwaRepository.countByUserId(userId)
+
     return {
-      userManhwa,
+      userManhwas,
+      total,
     }
   }
 }

@@ -22,7 +22,7 @@ describe('Register User Use Case', () => {
       username: 'jhondoe',
     })
 
-    expect(user.id).toEqual(expect.any(String))
+    expect(user.id).toEqual(expect.any(BigInt))
   })
 
   it('should hash user password upon register', async () => {

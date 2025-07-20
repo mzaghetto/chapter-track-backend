@@ -6,6 +6,7 @@ import { RoleUpdateError } from './errors/role-update-error'
 import { EmailAlreadyExistsError } from './errors/email-already-exists-error'
 import { UsernameAlreadyExistsError } from './errors/username-already-exists-error'
 import { randomUUID } from 'crypto'
+import { Role } from '@prisma/client'
 import { ResourceNotFoundError } from './errors/resource-not-found'
 
 let usersRepository: InMemoryUsersRepository
@@ -17,14 +18,14 @@ describe('Get User Profile Use Case', () => {
     sut = new UpdateUserProfileUseCase(usersRepository)
 
     await usersRepository.create({
-      id: 'user-01',
+      id: BigInt(1),
       name: 'Jhon Doe',
       username: 'jhondoe',
       email: 'johndoe@example.com',
       password_hash: await hash('123456', 6),
-      role: 'user',
-      created_at: new Date(),
-      updated_at: null,
+      role: 'USER',
+      createdAt: new Date(),
+      
     })
   })
 
@@ -34,7 +35,7 @@ describe('Get User Profile Use Case', () => {
     }
 
     const { user } = await sut.execute({
-      userID: 'user-01',
+      userID: BigInt(1),
       data,
     })
 
@@ -48,7 +49,7 @@ describe('Get User Profile Use Case', () => {
 
     await expect(() =>
       sut.execute({
-        userID: 'non-existing-id',
+        userID: BigInt(999),
         data,
       }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError)
@@ -56,12 +57,12 @@ describe('Get User Profile Use Case', () => {
 
   it('should not be able to update user role in user profile', async () => {
     const data = {
-      role: 'admin',
+      role: Role.ADMIN,
     }
 
     await expect(() =>
       sut.execute({
-        userID: 'user-01',
+        userID: BigInt(1),
         data,
       }),
     ).rejects.toBeInstanceOf(RoleUpdateError)
@@ -69,14 +70,13 @@ describe('Get User Profile Use Case', () => {
 
   it('should not be able to update to an email address that has already been registered by another user', async () => {
     const createdUser = await usersRepository.create({
-      id: 'user-02',
+      id: BigInt(2),
       name: 'Jhon Doe 2',
       username: 'jhondoe2',
       email: 'johndoe2@example.com',
       password_hash: await hash('123456', 6),
-      role: 'user',
-      created_at: new Date(),
-      updated_at: null,
+      role: 'USER',
+      createdAt: new Date(),
     })
 
     const data = {
@@ -93,14 +93,13 @@ describe('Get User Profile Use Case', () => {
 
   it('should not be able to update to an username that has already been registered by another user', async () => {
     const createdUser = await usersRepository.create({
-      id: randomUUID(),
+      id: BigInt(3),
       name: 'Jhon Doe 2',
       username: 'jhondoe2',
       email: 'johndoe2@example.com',
       password_hash: await hash('123456', 6),
-      role: 'user',
-      created_at: new Date(),
-      updated_at: null,
+      role: 'USER',
+      createdAt: new Date(),
     })
 
     const data = {
