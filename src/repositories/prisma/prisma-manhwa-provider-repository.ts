@@ -1,9 +1,17 @@
 import { ManhwaProvider, Prisma } from '@prisma/client'
-import { ManhwaProviderRepository } from '../manhwa-provider-repository'
+import {
+  FindAllFilters,
+  ManhwaProviderRepository,
+} from '../manhwa-provider-repository'
 import { prisma } from '@/lib/prisma'
+import { DetailedManhwaProvider } from '../dtos/detailed-manhwa-provider'
 
-export class PrismaManhwaProviderRepository implements ManhwaProviderRepository {
-  async create(data: Prisma.ManhwaProviderUncheckedCreateInput): Promise<ManhwaProvider> {
+export class PrismaManhwaProviderRepository
+  implements ManhwaProviderRepository
+{
+  async create(
+    data: Prisma.ManhwaProviderUncheckedCreateInput,
+  ): Promise<ManhwaProvider> {
     const manhwaProvider = await prisma.manhwaProvider.create({
       data,
     })
@@ -33,6 +41,47 @@ export class PrismaManhwaProviderRepository implements ManhwaProviderRepository 
     })
 
     return manhwaProvider
+  }
+
+  async findAll(filters: FindAllFilters): Promise<DetailedManhwaProvider[]> {
+    const manhwaProviders = await prisma.manhwaProvider.findMany({
+      where: {
+        manhwaId: filters.manhwaId,
+        providerId: filters.providerId,
+        ...(filters.manhwaName && {
+          manhwa: {
+            name: {
+              contains: filters.manhwaName,
+              mode: 'insensitive',
+            },
+          },
+        }),
+        ...(filters.providerName && {
+          provider: {
+            name: {
+              contains: filters.providerName,
+              mode: 'insensitive',
+            },
+          },
+        }),
+      },
+      include: {
+        manhwa: true,
+        provider: true,
+      },
+    })
+
+    return manhwaProviders.map((manhwaProvider) => ({
+      id: manhwaProvider.id,
+      manhwaId: manhwaProvider.manhwaId,
+      manhwaName: manhwaProvider.manhwa.name,
+      providerId: manhwaProvider.providerId,
+      providerName: manhwaProvider.provider.name,
+      lastEpisodeReleased: manhwaProvider.lastEpisodeReleased,
+      url: manhwaProvider.url,
+      createdAt: manhwaProvider.createdAt,
+      updatedAt: manhwaProvider.updatedAt,
+    }))
   }
 
   async update(

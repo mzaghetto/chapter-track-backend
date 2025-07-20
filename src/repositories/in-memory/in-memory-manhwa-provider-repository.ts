@@ -1,10 +1,23 @@
 import { ManhwaProvider, Prisma } from '@prisma/client'
-import { ManhwaProviderRepository } from '../manhwa-provider-repository'
+import {
+  FindAllFilters,
+  ManhwaProviderRepository,
+} from '../manhwa-provider-repository'
+import { DetailedManhwaProvider } from '../dtos/detailed-manhwa-provider'
 
-export class InMemoryManhwaProviderRepository implements ManhwaProviderRepository {
-  public items: ManhwaProvider[] = []
+export class InMemoryManhwaProviderRepository
+  implements ManhwaProviderRepository
+{
+  public items: (ManhwaProvider & {
+    manhwa?: { name: string }
+    provider?: { name: string }
+  })[] = []
 
-  async create(data: Prisma.ManhwaProviderUncheckedCreateInput): Promise<ManhwaProvider> {
+  async create(
+    data: Prisma.ManhwaProviderUncheckedCreateInput,
+    manhwa?: { name: string },
+    provider?: { name: string },
+  ): Promise<ManhwaProvider> {
     const manhwaProvider = {
       id: data.id ? BigInt(data.id.toString()) : BigInt(this.items.length + 1),
       manhwaId: BigInt(data.manhwaId),
@@ -13,7 +26,12 @@ export class InMemoryManhwaProviderRepository implements ManhwaProviderRepositor
       url: data.url ?? null,
       createdAt: data.createdAt ?? new Date(),
       updatedAt: data.updatedAt ?? new Date(),
-    } as ManhwaProvider
+      manhwa,
+      provider,
+    } as ManhwaProvider & {
+      manhwa?: { name: string }
+      provider?: { name: string }
+    }
 
     this.items.push(manhwaProvider)
 
@@ -24,15 +42,11 @@ export class InMemoryManhwaProviderRepository implements ManhwaProviderRepositor
     manhwaId: bigint,
     providerId: bigint,
   ): Promise<ManhwaProvider | null> {
-    const manhwaProvider = this.items.find(
-      (item) => item.manhwaId === manhwaId && item.providerId === providerId,
+    return (
+      this.items.find(
+        (item) => item.manhwaId === manhwaId && item.providerId === providerId,
+      ) ?? null
     )
-
-    if (!manhwaProvider) {
-      return null
-    }
-
-    return manhwaProvider
   }
 
   async findById(id: bigint): Promise<ManhwaProvider | null> {
@@ -43,6 +57,36 @@ export class InMemoryManhwaProviderRepository implements ManhwaProviderRepositor
     }
 
     return manhwaProvider
+  }
+
+  async findAll(filters: FindAllFilters): Promise<DetailedManhwaProvider[]> {
+    return this.items
+      .filter(
+        (item) =>
+          (!filters.manhwaId || item.manhwaId === filters.manhwaId) &&
+          (!filters.providerId || item.providerId === filters.providerId) &&
+          (!filters.manhwaName ||
+            (item.manhwa &&
+              item.manhwa.name
+                .toLowerCase()
+                .includes(filters.manhwaName.toLowerCase()))) &&
+          (!filters.providerName ||
+            (item.provider &&
+              item.provider.name
+                .toLowerCase()
+                .includes(filters.providerName.toLowerCase()))),
+      )
+      .map((manhwaProvider) => ({
+        id: manhwaProvider.id,
+        manhwaId: manhwaProvider.manhwaId,
+        manhwaName: manhwaProvider.manhwa?.name || '',
+        providerId: manhwaProvider.providerId,
+        providerName: manhwaProvider.provider?.name || '',
+        lastEpisodeReleased: manhwaProvider.lastEpisodeReleased,
+        url: manhwaProvider.url,
+        createdAt: manhwaProvider.createdAt,
+        updatedAt: manhwaProvider.updatedAt,
+      }))
   }
 
   async update(
