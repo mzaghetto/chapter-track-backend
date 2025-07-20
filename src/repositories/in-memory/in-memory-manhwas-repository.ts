@@ -9,7 +9,9 @@ export class InMemoryManhwasRepository implements ManhwasRepository {
     private manhwaProviderRepository?: InMemoryManhwaProviderRepository,
   ) {}
 
-  async create(data: Prisma.ManhwasCreateInput & { manhwaProviders?: any[] }): Promise<Manhwas> {
+  async create(
+    data: Prisma.ManhwasCreateInput & { manhwaProviders?: any[] },
+  ): Promise<Manhwas> {
     const manhwa = {
       id: data.id ? BigInt(data.id.toString()) : BigInt(this.items.length + 1),
       name: data.name,
@@ -45,11 +47,12 @@ export class InMemoryManhwasRepository implements ManhwasRepository {
   }
 
   async filterByName(name: string): Promise<
-    (Manhwas & {
-      manhwaProviders: {
-        lastEpisodeReleased: number | null
-      }[]
-    })[] | null
+    | (Manhwas & {
+        manhwaProviders: {
+          lastEpisodeReleased: number | null
+        }[]
+      })[]
+    | null
   > {
     const filteredItems = this.items.filter((item) => item.name.includes(name))
 
@@ -76,11 +79,12 @@ export class InMemoryManhwasRepository implements ManhwasRepository {
   }
 
   async findByID(manhwaID: bigint): Promise<
-    (Manhwas & {
-      manhwaProviders: {
-        lastEpisodeReleased: number | null
-      }[]
-    }) | null
+    | (Manhwas & {
+        manhwaProviders: {
+          lastEpisodeReleased: number | null
+        }[]
+      })
+    | null
   > {
     const indexOfManhwa = this.items.findIndex((item) => item.id === manhwaID)
 

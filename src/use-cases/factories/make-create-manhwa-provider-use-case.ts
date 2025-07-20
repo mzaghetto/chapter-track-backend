@@ -1,4 +1,4 @@
-import { CreateManhwaProviderUseCase } from '../create-manhwa-provider'
+import { CreateManhwaProviderUseCase } from '@/use-cases/manhwa-provider/create-manhwa-provider'
 import { PrismaManhwaProviderRepository } from '@/repositories/prisma/prisma-manhwa-provider-repository'
 import { PrismaManhwasRepository } from '@/repositories/prisma/prisma-manhwas-repository'
 import { PrismaProvidersRepository } from '@/repositories/prisma/prisma-providers-repository'

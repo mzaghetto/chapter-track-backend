@@ -13,7 +13,9 @@ export class PrismaUsersRepository implements UsersRepository {
     return user
   }
 
-  findByUsername(username: string | Prisma.StringFieldUpdateOperationsInput): Promise<Users | null> {
+  findByUsername(
+    username: string | Prisma.StringFieldUpdateOperationsInput,
+  ): Promise<Users | null> {
     const user = prisma.users.findUnique({
       where: {
         username: username.toString(),
@@ -67,7 +69,11 @@ export class PrismaUsersRepository implements UsersRepository {
     return user
   }
 
-  async updateTelegram(userId: bigint, telegramId: string | null, telegramActive: boolean): Promise<Users | null> {
+  async updateTelegram(
+    userId: bigint,
+    telegramId: string | null,
+    telegramActive: boolean,
+  ): Promise<Users | null> {
     const updatedUser = await prisma.users.update({
       where: {
         id: userId,

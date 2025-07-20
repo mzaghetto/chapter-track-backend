@@ -1,5 +1,5 @@
 import { PrismaManhwasRepository } from '@/repositories/prisma/prisma-manhwas-repository'
-import { AddManhwaToUserUseCase } from '../add-manhwa-to-user'
+import { AddManhwaToUserUseCase } from '@/use-cases/user/add-manhwa-to-user'
 import { PrismaProvidersRepository } from '@/repositories/prisma/prisma-providers-repository'
 import { PrismaUserManhwaRepository } from '@/repositories/prisma/prisma-user-manhwa-repository'
 import { PrismaUsersRepository } from '@/repositories/prisma/prisma-users-repository'

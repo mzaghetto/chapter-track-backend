@@ -1,4 +1,4 @@
-import { UpdateManhwaUseCase } from '../update-manhwa'
+import { UpdateManhwaUseCase } from '@/use-cases/manhwa/update-manhwa'
 import { PrismaManhwasRepository } from '@/repositories/prisma/prisma-manhwas-repository'
 
 export function makeUpdateManhwaUseCase() {

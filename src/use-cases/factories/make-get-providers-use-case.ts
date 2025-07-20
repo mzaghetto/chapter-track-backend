@@ -1,5 +1,5 @@
 import { PrismaProvidersRepository } from '@/repositories/prisma/prisma-providers-repository'
-import { GetProvidersUseCase } from '../get-providers'
+import { GetProvidersUseCase } from '@/use-cases/provider/get-providers'
 
 export function makeGetProvidersUseCase() {
   const providersRepository = new PrismaProvidersRepository()

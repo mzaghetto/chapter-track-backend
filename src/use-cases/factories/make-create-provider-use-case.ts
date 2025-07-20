@@ -1,4 +1,4 @@
-import { CreateProviderUseCase } from '../create-provider'
+import { CreateProviderUseCase } from '@/use-cases/provider/create-provider'
 import { PrismaProvidersRepository } from '@/repositories/prisma/prisma-providers-repository'
 
 export function makeCreateProviderUseCase() {

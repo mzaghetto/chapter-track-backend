@@ -1,5 +1,5 @@
 import { PrismaManhwasRepository } from '@/repositories/prisma/prisma-manhwas-repository'
-import { GetUnreadManhwasUseCase } from '../get-unread-manhwas'
+import { GetUnreadManhwasUseCase } from '@/use-cases/user/get-unread-manhwas'
 import { PrismaUserManhwaRepository } from '@/repositories/prisma/prisma-user-manhwa-repository'
 
 export function makeGetUnreadManhwasUseCase() {

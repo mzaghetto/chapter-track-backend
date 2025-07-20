@@ -1,5 +1,5 @@
 import { PrismaUserNotificationsRepository } from '@/repositories/prisma/prisma-user-notifications-repository'
-import { TriggerManhwaNotificationUseCase } from '../trigger-manhwa-notification'
+import { TriggerManhwaNotificationUseCase } from '@/use-cases/notification/trigger-manhwa-notification'
 import { PrismaUserManhwaRepository } from '@/repositories/prisma/prisma-user-manhwa-repository'
 
 export function makeTriggerManhwaNotificationUseCase() {

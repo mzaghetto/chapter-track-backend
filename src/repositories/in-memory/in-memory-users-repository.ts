@@ -14,7 +14,10 @@ export class InMemoryUsersRepository implements UsersRepository {
     return user
   }
 
-  async findByIDAndUpdate(userID: bigint, data: Prisma.UsersUpdateInput): Promise<Users | null> {
+  async findByIDAndUpdate(
+    userID: bigint,
+    data: Prisma.UsersUpdateInput,
+  ): Promise<Users | null> {
     const indexOfUser = this.items.findIndex((item) => item.id === userID)
 
     if (indexOfUser === -1) {
@@ -85,7 +88,11 @@ export class InMemoryUsersRepository implements UsersRepository {
     return Promise.resolve(user)
   }
 
-  async updateTelegram(userId: bigint, telegramId: string | null, telegramActive: boolean): Promise<Users | null> {
+  async updateTelegram(
+    userId: bigint,
+    telegramId: string | null,
+    telegramActive: boolean,
+  ): Promise<Users | null> {
     const indexOfUser = this.items.findIndex((item) => item.id === userId)
 
     if (indexOfUser === -1) {

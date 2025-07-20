@@ -22,11 +22,12 @@ export class PrismaManhwasRepository implements ManhwasRepository {
   }
 
   async filterByName(name: string): Promise<
-    (Manhwas & {
-      manhwaProviders: {
-        lastEpisodeReleased: number | null
-      }[]
-    })[] | null
+    | (Manhwas & {
+        manhwaProviders: {
+          lastEpisodeReleased: number | null
+        }[]
+      })[]
+    | null
   > {
     const manhwa = await prisma.manhwas.findMany({
       where: {
@@ -60,11 +61,12 @@ export class PrismaManhwasRepository implements ManhwasRepository {
   }
 
   async findByID(manhwaID: bigint): Promise<
-    (Manhwas & {
-      manhwaProviders: {
-        lastEpisodeReleased: number | null
-      }[]
-    }) | null
+    | (Manhwas & {
+        manhwaProviders: {
+          lastEpisodeReleased: number | null
+        }[]
+      })
+    | null
   > {
     const manhwa = await prisma.manhwas.findFirst({
       where: {

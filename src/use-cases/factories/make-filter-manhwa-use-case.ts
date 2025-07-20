@@ -1,5 +1,5 @@
 import { PrismaManhwasRepository } from '@/repositories/prisma/prisma-manhwas-repository'
-import { FilterManhwaByNameUseCase } from '../filter-manhwas'
+import { FilterManhwaByNameUseCase } from '@/use-cases/manhwa/filter-manhwas'
 
 export function makeFilterManhwaByNameToUserUseCase() {
   const manhwaRepository = new PrismaManhwasRepository()

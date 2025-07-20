@@ -35,7 +35,10 @@ export class PrismaProvidersRepository implements ProvidersRepository {
     return prisma.providers.findMany()
   }
 
-  async update(id: bigint, data: Prisma.ProvidersUpdateInput): Promise<Providers> {
+  async update(
+    id: bigint,
+    data: Prisma.ProvidersUpdateInput,
+  ): Promise<Providers> {
     const updatedProvider = await prisma.providers.update({
       where: {
         id,

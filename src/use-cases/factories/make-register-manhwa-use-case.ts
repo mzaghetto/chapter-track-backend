@@ -1,4 +1,4 @@
-import { RegisterManhwaUseCase } from '../register-manhwa'
+import { RegisterManhwaUseCase } from '@/use-cases/manhwa/register-manhwa'
 import { PrismaManhwasRepository } from '@/repositories/prisma/prisma-manhwas-repository'
 
 export function makeRegisterManhwaUserUseCase() {

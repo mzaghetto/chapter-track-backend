@@ -1,5 +1,5 @@
 import { PrismaUserNotificationsRepository } from '@/repositories/prisma/prisma-user-notifications-repository'
-import { RegisterUserNotificationUseCase } from '../register-user-notification'
+import { RegisterUserNotificationUseCase } from '@/use-cases/notification/register-user-notification'
 
 export function makeRegisterUserNotificationUseCase() {
   const userNotificationsRepository = new PrismaUserNotificationsRepository()
