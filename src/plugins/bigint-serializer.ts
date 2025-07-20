@@ -4,7 +4,7 @@ import { FastifyInstance } from 'fastify'
 export default fp(async function (fastify: FastifyInstance) {
   fastify.setReplySerializer((payload) => {
     return JSON.stringify(payload, (key, value) =>
-      typeof value === 'bigint' ? value.toString() : value,
+      typeof value === 'bigint' ? Number(value) : value,
     )
   })
 })
