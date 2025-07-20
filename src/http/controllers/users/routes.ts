@@ -11,6 +11,7 @@ import { userManhwas } from './user-manhwas'
 import { unreadManhwas } from './unread-manhwas'
 import { telegramNotification } from './telegram-notification'
 import { googleSSO } from './google-sso'
+import { registerNotification } from './register-notification'
 
 export async function usersRoutes(app: FastifyInstance) {
   app.post('/register', register)
@@ -35,5 +36,11 @@ export async function usersRoutes(app: FastifyInstance) {
     '/user/telegram-notification',
     { onRequest: [verifyJWT] },
     telegramNotification,
+  )
+
+  app.post(
+    '/user/notifications/register',
+    { onRequest: [verifyJWT] },
+    registerNotification,
   )
 }
