@@ -1,4 +1,5 @@
 import { UserManhwa, Prisma } from '@prisma/client'
+import { DetailedUserManhwa } from './dtos/detailed-user-manhwa'
 
 export interface UserManhwaRepository {
   create(data: Prisma.UserManhwaUncheckedCreateInput): Promise<UserManhwa>
@@ -6,7 +7,11 @@ export interface UserManhwaRepository {
     userId: bigint,
     manhwaId: bigint,
   ): Promise<UserManhwa | null>
-  findByUserId(userId: bigint, page: number, pageSize: number): Promise<UserManhwa[]>
+  findByUserId(
+    userId: bigint,
+    page: number,
+    pageSize: number,
+  ): Promise<DetailedUserManhwa[]>
   update(id: bigint, data: Prisma.UserManhwaUncheckedUpdateInput): Promise<UserManhwa>
   delete(id: bigint): Promise<void>
   countByUserId(userId: bigint): Promise<number>

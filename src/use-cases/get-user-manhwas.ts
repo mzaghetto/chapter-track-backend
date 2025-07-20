@@ -1,7 +1,7 @@
 import { UserManhwaRepository } from '@/repositories/user-manhwa-repository'
 import { UsersRepository } from '@/repositories/users-repository'
-import { UserManhwa } from '@prisma/client'
 import { ResourceNotFoundError } from './errors/resource-not-found'
+import { DetailedUserManhwa } from '@/repositories/dtos/detailed-user-manhwa'
 
 interface GetUserManhwasUseCaseRequest {
   userId: bigint
@@ -10,7 +10,7 @@ interface GetUserManhwasUseCaseRequest {
 }
 
 interface GetUserManhwasUseCaseResponse {
-  userManhwas: UserManhwa[]
+  userManhwas: DetailedUserManhwa[]
   total: number
 }
 

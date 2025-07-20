@@ -1,11 +1,14 @@
 import { UserManhwa, Prisma, UserManhwaStatus } from '@prisma/client'
 import { UserManhwaRepository } from '../user-manhwa-repository'
+import { DetailedUserManhwa } from '../dtos/detailed-user-manhwa'
 
 export class InMemoryUserManhwaRepository implements UserManhwaRepository {
   public items: UserManhwa[] = []
   private nextId = 1n
 
-  async create(data: Prisma.UserManhwaUncheckedCreateInput): Promise<UserManhwa> {
+  async create(
+    data: Prisma.UserManhwaUncheckedCreateInput,
+  ): Promise<UserManhwa> {
     const userManhwa: UserManhwa = {
       id: this.nextId++,
       userId: BigInt(data.userId),
@@ -34,16 +37,48 @@ export class InMemoryUserManhwaRepository implements UserManhwaRepository {
     )
   }
 
-  async findByUserId(userId: bigint, page: number, pageSize: number): Promise<UserManhwa[]> {
+  async findByUserId(
+    userId: bigint,
+    page: number,
+    pageSize: number,
+  ): Promise<DetailedUserManhwa[]> {
     const userManhwas = this.items.filter((item) => item.userId === userId)
-    return userManhwas.slice((page - 1) * pageSize, page * pageSize)
+
+    return userManhwas
+      .slice((page - 1) * pageSize, page * pageSize)
+      .map((um) => ({
+        id: um.id,
+        manhwaId: um.manhwaId,
+        manhwaName: 'Test Manhwa',
+        coverImage: 'test.jpg',
+        providerId: 1n,
+        providerName: 'Test Provider',
+        lastEpisodeReleased: 100,
+        manhwaUrlProvider: 'test.com',
+        statusReading: um.status,
+        statusManhwa: 'ONGOING',
+        lastEpisodeRead: um.lastEpisodeRead,
+        lastNotifiedEpisode: um.lastNotifiedEpisode,
+        order: um.order,
+        lastUpdated: um.lastUpdated,
+        createdAt: um.createdAt,
+        updatedAt: um.updatedAt,
+      }))
   }
 
-  async update(id: bigint, data: Prisma.UserManhwaUncheckedUpdateInput): Promise<UserManhwa> {
+  async update(
+    id: bigint,
+    data: Prisma.UserManhwaUncheckedUpdateInput,
+  ): Promise<UserManhwa> {
     const index = this.items.findIndex((item) => item.id === id)
     const item = this.items[index]
 
-    const updatedItem = { ...item, ...data, id, updatedAt: new Date() } as UserManhwa
+    const updatedItem = {
+      ...item,
+      ...data,
+      id,
+      updatedAt: new Date(),
+    } as UserManhwa
     this.items[index] = updatedItem
 
     return updatedItem

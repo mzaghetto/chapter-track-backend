@@ -26,7 +26,6 @@ describe('Get User Manhwas Use Case', () => {
       password_hash: await hash('123456', 6),
       role: 'USER',
       createdAt: new Date(),
-      
     })
 
     // create several manhwas to pagination
