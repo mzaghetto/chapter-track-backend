@@ -1,6 +1,7 @@
 import { UserNotifications, Prisma } from '@prisma/client'
 import { prisma } from '@/lib/prisma'
 import { UserNotificationsRepository } from '../user-notifications-repository'
+import { DetailedUserNotification } from '../dtos/detailed-user-notification'
 
 export class PrismaUserNotificationsRepository
   implements UserNotificationsRepository
@@ -49,6 +50,28 @@ export class PrismaUserNotificationsRepository
   async findByManhwaId(manhwaId: bigint): Promise<UserNotifications[]> {
     return prisma.userNotifications.findMany({
       where: { manhwaId, isEnabled: true },
+    })
+  }
+
+  async findDetailedByManhwaId(
+    manhwaId: bigint,
+  ): Promise<DetailedUserNotification[]> {
+    return prisma.userNotifications.findMany({
+      where: { manhwaId, isEnabled: true },
+      include: {
+        user: {
+          select: {
+            telegramId: true,
+            name: true,
+            telegramActive: true,
+          },
+        },
+        manhwa: {
+          select: {
+            name: true,
+          },
+        },
+      },
     })
   }
 }

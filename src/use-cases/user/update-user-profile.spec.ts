@@ -24,6 +24,7 @@ describe('Get User Profile Use Case', () => {
       password_hash: await hash('123456', 6),
       role: 'USER',
       createdAt: new Date(),
+      telegramLinkingToken: null,
     })
   })
 
@@ -38,6 +39,19 @@ describe('Get User Profile Use Case', () => {
     })
 
     expect(user.name).toEqual('Jhon Doeeeeeeee')
+  })
+
+  it('should be able to update telegramLinkingToken', async () => {
+    const data = {
+      telegramLinkingToken: 'some-new-token',
+    }
+
+    const { user } = await sut.execute({
+      userID: BigInt(1),
+      data,
+    })
+
+    expect(user.telegramLinkingToken).toEqual('some-new-token')
   })
 
   it('should not be able to update a user profile with wrong id', async () => {

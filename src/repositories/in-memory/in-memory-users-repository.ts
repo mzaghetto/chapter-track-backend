@@ -81,6 +81,7 @@ export class InMemoryUsersRepository implements UsersRepository {
       resetPasswordExpires: data.resetPasswordExpires ?? null,
       telegramId: data.telegramId ?? null,
       telegramActive: data.telegramActive ?? false,
+      telegramLinkingToken: data.telegramLinkingToken ?? null,
     } as Users
 
     this.items.push(user)
@@ -107,5 +108,15 @@ export class InMemoryUsersRepository implements UsersRepository {
     } as Users
 
     return Promise.resolve(this.items[indexOfUser])
+  }
+
+  async findByTelegramLinkingToken(token: string): Promise<Users | null> {
+    const user = this.items.find((item) => item.telegramLinkingToken === token)
+
+    if (!user) {
+      return null
+    }
+
+    return user
   }
 }

@@ -3,18 +3,22 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { TriggerManhwaNotificationUseCase } from './trigger-manhwa-notification'
 import { UserManhwaStatus, NotificationChannel } from '@prisma/client'
 import { InMemoryUserManhwaRepository } from '@/repositories/in-memory/in-memory-user-manhwa-repository'
+import { TelegramService } from '@/services/telegram-service'
 
 describe('Trigger Manhwa Notification Use Case', () => {
   let userNotificationsRepository: InMemoryUserNotificationsRepository
   let userManhwaRepository: InMemoryUserManhwaRepository
+  let telegramService: TelegramService
   let sut: TriggerManhwaNotificationUseCase
 
   beforeEach(() => {
     userNotificationsRepository = new InMemoryUserNotificationsRepository()
     userManhwaRepository = new InMemoryUserManhwaRepository()
+    telegramService = { sendMessage: vi.fn() } as unknown as TelegramService
     sut = new TriggerManhwaNotificationUseCase(
       userNotificationsRepository,
       userManhwaRepository,
+      telegramService,
     )
   })
 
@@ -52,16 +56,12 @@ describe('Trigger Manhwa Notification Use Case', () => {
       order: 1,
     })
 
-    const consoleSpy = vi.spyOn(console, 'log')
-
     await sut.execute({ manhwaId, newEpisodeNumber })
 
-    expect(consoleSpy).toHaveBeenCalledTimes(2)
-    expect(consoleSpy).toHaveBeenCalledWith(
-      `Sending notification to user ${userId1} for manhwa ${manhwaId} new episode ${newEpisodeNumber} via ${NotificationChannel.TELEGRAM}`,
-    )
-    expect(consoleSpy).toHaveBeenCalledWith(
-      `Sending notification to user ${userId2} for manhwa ${manhwaId} new episode ${newEpisodeNumber} via ${NotificationChannel.EMAIL}`,
+    expect(telegramService.sendMessage).toHaveBeenCalledTimes(1)
+    expect(telegramService.sendMessage).toHaveBeenCalledWith(
+      `telegram-${userId1}`,
+      `New episode of *Manhwa ${manhwaId}* is out! Episode *${newEpisodeNumber}* is now available.`,
     )
 
     const userManhwa1 = await userManhwaRepository.findByUserIdAndManhwaId(
@@ -96,11 +96,9 @@ describe('Trigger Manhwa Notification Use Case', () => {
       order: 1,
     })
 
-    const consoleSpy = vi.spyOn(console, 'log')
-
     await sut.execute({ manhwaId, newEpisodeNumber })
 
-    expect(consoleSpy).not.toHaveBeenCalled()
+    expect(telegramService.sendMessage).not.toHaveBeenCalled()
 
     const userManhwa = await userManhwaRepository.findByUserIdAndManhwaId(
       userId,

@@ -5,6 +5,7 @@ const envSchema = z.object({
   NODE_ENV: z.enum(['dev', 'test', 'production']).default('dev'),
   PORT: z.coerce.number().default(5001),
   JWT_SECRET: z.string(),
+  TELEGRAM_BOT_TOKEN: z.string(),
 })
 
 const _env = envSchema.safeParse(process.env)

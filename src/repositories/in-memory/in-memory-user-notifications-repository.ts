@@ -1,5 +1,6 @@
 import { UserNotifications, Prisma } from '@prisma/client'
 import { UserNotificationsRepository } from '../user-notifications-repository'
+import { DetailedUserNotification } from '../dtos/detailed-user-notification'
 
 export class InMemoryUserNotificationsRepository
   implements UserNotificationsRepository
@@ -70,5 +71,25 @@ export class InMemoryUserNotificationsRepository
     return this.items.filter(
       (item) => item.manhwaId === manhwaId && item.isEnabled,
     )
+  }
+
+  async findDetailedByManhwaId(
+    manhwaId: bigint,
+  ): Promise<DetailedUserNotification[]> {
+    const notifications = this.items.filter(
+      (item) => item.manhwaId === manhwaId && item.isEnabled,
+    )
+
+    return notifications.map((notification) => ({
+      ...notification,
+      user: {
+        telegramId: `telegram-${notification.userId}`,
+        name: `User ${notification.userId}`,
+        telegramActive: true,
+      },
+      manhwa: {
+        name: `Manhwa ${notification.manhwaId}`,
+      },
+    }))
   }
 }

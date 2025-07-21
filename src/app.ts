@@ -7,6 +7,7 @@ import fastifyCookie from '@fastify/cookie'
 import { manhwaRoutes } from './http/controllers/manhwa/routes'
 import { providerRoutes } from './http/controllers/providers/routes'
 import { manhwaProviderRoutes } from './http/controllers/manhwa-provider/routes'
+import { telegramRoutes } from './http/controllers/telegram/routes'
 import bigintSerializer from './plugins/bigint-serializer'
 
 export const app = fastify()
@@ -25,6 +26,7 @@ app.register(usersRoutes)
 app.register(manhwaRoutes)
 app.register(providerRoutes)
 app.register(manhwaProviderRoutes)
+app.register(telegramRoutes)
 
 app.setErrorHandler((error, _, reply) => {
   if (error instanceof ZodError) {

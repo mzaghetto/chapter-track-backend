@@ -85,4 +85,13 @@ export class PrismaUsersRepository implements UsersRepository {
     })
     return updatedUser
   }
+
+  async findByTelegramLinkingToken(token: string): Promise<Users | null> {
+    const user = await prisma.users.findUnique({
+      where: {
+        telegramLinkingToken: token,
+      },
+    })
+    return user
+  }
 }

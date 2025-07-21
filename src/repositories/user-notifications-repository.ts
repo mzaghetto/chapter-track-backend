@@ -1,4 +1,5 @@
 import { UserNotifications, Prisma } from '@prisma/client'
+import { DetailedUserNotification } from './dtos/detailed-user-notification'
 
 export interface UserNotificationsRepository {
   create(
@@ -16,4 +17,5 @@ export interface UserNotificationsRepository {
   delete(id: bigint): Promise<void>
   findManyByUserId(userId: bigint): Promise<UserNotifications[]>
   findByManhwaId(manhwaId: bigint): Promise<UserNotifications[]>
+  findDetailedByManhwaId(manhwaId: bigint): Promise<DetailedUserNotification[]>
 }

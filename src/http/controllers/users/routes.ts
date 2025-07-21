@@ -12,6 +12,8 @@ import { unreadManhwas } from './unread-manhwas'
 import { telegramNotification } from './telegram-notification'
 import { googleSSO } from './google-sso'
 import { registerNotification } from './register-notification'
+import { generateTelegramLinkingToken } from './generate-telegram-linking-token'
+import { resetTelegramLinking } from './reset-telegram-linking'
 
 export async function usersRoutes(app: FastifyInstance) {
   app.post('/register', register)
@@ -42,5 +44,17 @@ export async function usersRoutes(app: FastifyInstance) {
     '/user/notifications/register',
     { onRequest: [verifyJWT] },
     registerNotification,
+  )
+
+  app.post(
+    '/user/telegram-linking-token',
+    { onRequest: [verifyJWT] },
+    generateTelegramLinkingToken,
+  )
+
+  app.patch(
+    '/user/reset-telegram-linking',
+    { onRequest: [verifyJWT] },
+    resetTelegramLinking,
   )
 }

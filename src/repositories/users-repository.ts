@@ -14,6 +14,7 @@ export interface UsersRepository {
     data: Prisma.UsersUpdateInput,
   ): Promise<Users | null>
   findByGoogleId(googleId: string): Promise<Users | null>
+  findByTelegramLinkingToken(token: string): Promise<Users | null>
   updateTelegram(
     userId: bigint,
     telegramId: string | null,
