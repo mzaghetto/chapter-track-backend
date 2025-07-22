@@ -21,7 +21,7 @@ describe('Get Providers Use Case', () => {
       url: 'http://provider2.com',
     })
 
-    const { providers } = await sut.execute()
+    const { providers } = await sut.execute({})
 
     expect(providers).toHaveLength(2)
     expect(providers[0].name).toBe('Provider 1')
