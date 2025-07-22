@@ -5,6 +5,7 @@ import { updateManhwa } from './update-manhwa'
 import { verifyUserRole } from '@/http/middlewares/verify-user-role'
 import { filterManhwa } from './filter-manhwa'
 import { triggerNotification } from './trigger-notification'
+import { deleteManhwa } from './delete-manhwa'
 
 export async function manhwaRoutes(app: FastifyInstance) {
   app.post(
@@ -25,5 +26,11 @@ export async function manhwaRoutes(app: FastifyInstance) {
     '/manhwa/trigger-notification',
     { onRequest: [verifyJWT, verifyUserRole('ADMIN')] },
     triggerNotification,
+  )
+
+  app.delete(
+    '/manhwa/:manhwaId',
+    { onRequest: [verifyJWT, verifyUserRole('ADMIN')] },
+    deleteManhwa,
   )
 }

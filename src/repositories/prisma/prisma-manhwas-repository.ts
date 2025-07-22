@@ -91,4 +91,12 @@ export class PrismaManhwasRepository implements ManhwasRepository {
 
     return manhwa
   }
+
+  async delete(id: bigint): Promise<void> {
+    await prisma.manhwas.delete({
+      where: {
+        id,
+      },
+    })
+  }
 }

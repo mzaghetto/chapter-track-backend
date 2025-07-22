@@ -141,4 +141,11 @@ export class InMemoryManhwasRepository implements ManhwasRepository {
 
     return Promise.resolve(this.items[indexOfManhwa])
   }
+
+  async delete(id: bigint): Promise<void> {
+    const index = this.items.findIndex((item) => item.id === id)
+    if (index > -1) {
+      this.items.splice(index, 1)
+    }
+  }
 }
