@@ -25,14 +25,34 @@ export async function filterManhwa(
     const filterManhwaByNameToUserUseCase =
       makeFilterManhwaByNameToUserUseCase()
 
-    const manhwa = await filterManhwaByNameToUserUseCase.execute({
+    const {
+      items,
+      previousPage,
+      currentPage,
+      nextPage,
+      lastPage,
+      totalPages,
+      totalItems,
+      maxItemsPerPage,
+      totalItemsPage,
+    } = await filterManhwaByNameToUserUseCase.execute({
       nameToFilter: manhwaName,
       genre,
       status,
       params,
     })
 
-    return reply.status(200).send(manhwa)
+    return reply.status(200).send({
+      items,
+      previousPage,
+      currentPage,
+      nextPage,
+      lastPage,
+      totalPages,
+      totalItems,
+      maxItemsPerPage,
+      totalItemsPage,
+    })
   } catch (error) {
     if (error instanceof ResourceNotFoundError) {
       return reply.status(404).send({ message: error.message })
