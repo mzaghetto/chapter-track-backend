@@ -16,6 +16,8 @@ export async function profile(request: FastifyRequest, reply: FastifyReply) {
       role: user.role,
       preferences: user.preferences,
       lastLogin: user.lastLogin,
+      telegramId: user.telegramId,
+      telegramActive: user.telegramActive,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     },

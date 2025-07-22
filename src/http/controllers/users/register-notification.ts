@@ -27,10 +27,6 @@ export async function registerNotification(
   })
 
   return reply.status(201).send({
-    userNotification: {
-      manhwaId: userNotification.manhwaId,
-      channel: userNotification.channel,
-      isEnabled: userNotification.isEnabled,
-    },
+    userNotification,
   })
 }

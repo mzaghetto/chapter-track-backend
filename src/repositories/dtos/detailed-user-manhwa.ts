@@ -13,6 +13,7 @@ export interface DetailedUserManhwa {
   statusManhwa: ManhwaStatus | null
   lastEpisodeRead: number | null
   lastNotifiedEpisode: number | null
+  isTelegramNotificationEnabled: boolean
   order: number
   lastUpdated: Date | null
   createdAt: Date

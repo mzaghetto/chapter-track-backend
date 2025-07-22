@@ -14,6 +14,7 @@ import { googleSSO } from './google-sso'
 import { registerNotification } from './register-notification'
 import { generateTelegramLinkingToken } from './generate-telegram-linking-token'
 import { resetTelegramLinking } from './reset-telegram-linking'
+import { updateUserManhwa } from './update-user-manhwa'
 
 export async function usersRoutes(app: FastifyInstance) {
   app.post('/register', register)
@@ -56,5 +57,11 @@ export async function usersRoutes(app: FastifyInstance) {
     '/user/reset-telegram-linking',
     { onRequest: [verifyJWT] },
     resetTelegramLinking,
+  )
+
+  app.patch(
+    '/user/manhwas/:userManhwaId',
+    { onRequest: [verifyJWT] },
+    updateUserManhwa,
   )
 }

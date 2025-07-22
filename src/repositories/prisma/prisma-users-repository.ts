@@ -73,6 +73,7 @@ export class PrismaUsersRepository implements UsersRepository {
     userId: bigint,
     telegramId: string | null,
     telegramActive: boolean,
+    telegramLinkingToken?: string | null,
   ): Promise<Users | null> {
     const updatedUser = await prisma.users.update({
       where: {
@@ -81,6 +82,7 @@ export class PrismaUsersRepository implements UsersRepository {
       data: {
         telegramId,
         telegramActive,
+        telegramLinkingToken,
       },
     })
     return updatedUser

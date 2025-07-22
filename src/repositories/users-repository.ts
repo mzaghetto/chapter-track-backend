@@ -19,5 +19,6 @@ export interface UsersRepository {
     userId: bigint,
     telegramId: string | null,
     telegramActive: boolean,
+    telegramLinkingToken?: string | null,
   ): Promise<Users | null>
 }

@@ -59,6 +59,7 @@ export class InMemoryUserManhwaRepository implements UserManhwaRepository {
         statusManhwa: 'ONGOING',
         lastEpisodeRead: um.lastEpisodeRead,
         lastNotifiedEpisode: um.lastNotifiedEpisode,
+        isTelegramNotificationEnabled: false,
         order: um.order,
         lastUpdated: um.lastUpdated,
         createdAt: um.createdAt,

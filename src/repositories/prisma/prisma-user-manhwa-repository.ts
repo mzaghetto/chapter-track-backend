@@ -46,9 +46,21 @@ export class PrismaUserManhwaRepository implements UserManhwaRepository {
       },
     })
 
+    const userNotifications = await prisma.userNotifications.findMany({
+      where: {
+        userId,
+        manhwaId: {
+          in: manhwaIds,
+        },
+      },
+    })
+
     return userManhwas.map((userManhwa) => {
       const manhwaProvider = manhwaProviders.find(
         (mp) => mp.manhwaId === userManhwa.manhwaId,
+      )
+      const userNotification = userNotifications.find(
+        (un) => un.manhwaId === userManhwa.manhwaId,
       )
 
       return {
@@ -64,6 +76,7 @@ export class PrismaUserManhwaRepository implements UserManhwaRepository {
         statusManhwa: userManhwa.manhwa.status,
         lastEpisodeRead: userManhwa.lastEpisodeRead,
         lastNotifiedEpisode: userManhwa.lastNotifiedEpisode,
+        isTelegramNotificationEnabled: userNotification?.isEnabled ?? false,
         order: userManhwa.order,
         lastUpdated: userManhwa.lastUpdated,
         createdAt: userManhwa.createdAt,

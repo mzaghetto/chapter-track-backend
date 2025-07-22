@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
-import { makeUpdateUserProfileUseCase } from '@/use-cases/factories/make-update-user-profile-use-case'
+import { makeUpdateUserTelegramUseCase } from '@/use-cases/factories/make-update-user-telegram-use-case'
 import { makeFindUserByTelegramLinkingTokenUseCase } from '@/use-cases/factories/make-find-user-by-telegram-linking-token-use-case'
 import { TelegramService } from '@/services/telegram-service'
 
@@ -8,16 +8,22 @@ export async function telegramWebhook(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
-  const webhookBodySchema = z.object({
-    message: z.object({
-      chat: z.object({
-        id: z.number(),
+  console.log('Telegram Webhook received:', request.body)
+  let message
+  try {
+    const webhookBodySchema = z.object({
+      message: z.object({
+        chat: z.object({
+          id: z.number(),
+        }),
+        text: z.string(),
       }),
-      text: z.string(),
-    }),
-  })
-
-  const { message } = webhookBodySchema.parse(request.body)
+    })
+    message = webhookBodySchema.parse(request.body).message
+  } catch (error) {
+    console.error('Error parsing webhook body:', error)
+    return reply.status(400).send({ message: 'Invalid webhook body.' })
+  }
 
   if (message.text.startsWith('/start')) {
     const parts = message.text.split(' ')
@@ -26,7 +32,7 @@ export async function telegramWebhook(
     if (token) {
       const findUserByTelegramLinkingTokenUseCase =
         makeFindUserByTelegramLinkingTokenUseCase()
-      const updateUserProfileUseCase = makeUpdateUserProfileUseCase()
+      const updateUserTelegramUseCase = makeUpdateUserTelegramUseCase()
       const telegramService = new TelegramService()
 
       try {
@@ -34,13 +40,11 @@ export async function telegramWebhook(
           token,
         })
 
-        await updateUserProfileUseCase.execute({
-          userID: BigInt(user.id),
-          data: {
-            telegramId: message.chat.id.toString(),
-            telegramActive: true,
-            telegramLinkingToken: null, // Clear the token after successful linking
-          },
+        await updateUserTelegramUseCase.execute({
+          userId: BigInt(user.id),
+          telegramId: message.chat.id.toString(),
+          telegramActive: true,
+          telegramLinkingToken: null,
         })
 
         await telegramService.sendMessage(
