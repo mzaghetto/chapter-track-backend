@@ -31,8 +31,15 @@ export class PrismaProvidersRepository implements ProvidersRepository {
     return provider
   }
 
-  async findAll(): Promise<Providers[]> {
-    return prisma.providers.findMany()
+  async findAll(searchTerm?: string): Promise<Providers[]> {
+    return prisma.providers.findMany({
+      where: {
+        name: {
+          contains: searchTerm,
+          mode: 'insensitive',
+        },
+      },
+    })
   }
 
   async update(
