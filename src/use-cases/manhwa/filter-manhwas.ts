@@ -12,6 +12,10 @@ interface FilterManhwasUseCaseRequest {
 interface manhwaListResponse {
   manhwaId: bigint
   manhwaName: string
+  author: string | null
+  genre: string | null
+  description: string | null
+  status: 'ONGOING' | 'COMPLETED' | 'HIATUS' | null
   coverImage: string | null | undefined
   lastEpisodeReleased?: number
 }
@@ -35,20 +39,28 @@ export class FilterManhwaByNameUseCase extends Pageable<manhwaListResponse> {
 
   async execute({
     nameToFilter,
+    genre,
+    status,
     params,
   }: FilterManhwasUseCaseRequest): Promise<FilterManhwaByNameUseCaseReponse> {
     const manhwaFilteredByName = await this.manhwasRepository.filterByName(
       nameToFilter ?? '',
+      genre,
+      status,
     )
 
-    if (!manhwaFilteredByName || manhwaFilteredByName.length === 0) {
+    if (!manhwaFilteredByName || manhwaFilteredByName.items.length === 0) {
       throw new ResourceNotFoundError()
     }
 
-    const items = manhwaFilteredByName.map((manhwa) => {
+    const items = manhwaFilteredByName.items.map((manhwa) => {
       return {
         manhwaId: manhwa.id,
         manhwaName: manhwa.name,
+        author: manhwa.author,
+        genre: manhwa.genre ? JSON.stringify(manhwa.genre) : null,
+        description: manhwa.description,
+        status: manhwa.status,
         coverImage: manhwa.coverImage,
         lastEpisodeReleased:
           manhwa.manhwaProviders.length > 0
@@ -69,7 +81,7 @@ export class FilterManhwaByNameUseCase extends Pageable<manhwaListResponse> {
       nextPage: manhwa.nextPage,
       lastPage: manhwa.lastPage,
       totalPages: manhwa.totalPages,
-      totalItems: manhwa.totalItems,
+      totalItems: manhwaFilteredByName.totalItems,
       maxItemsPerPage: manhwa.maxItemsPerPage,
       totalItemsPage: manhwa.totalItemsPage,
       items: manhwa.items,

@@ -21,27 +21,51 @@ export class PrismaManhwasRepository implements ManhwasRepository {
     return manhwa
   }
 
-  async filterByName(name: string): Promise<
-    | (Manhwas & {
-        manhwaProviders: {
-          lastEpisodeReleased: number | null
-        }[]
-      })[]
-    | null
-  > {
-    const manhwa = await prisma.manhwas.findMany({
-      where: {
-        name: {
-          mode: 'insensitive',
-          contains: name,
-        },
+  async filterByName(
+    name: string,
+    genre?: string,
+    status?: 'ONGOING' | 'COMPLETED' | 'HIATUS',
+  ): Promise<{
+    items: (Manhwas & {
+      manhwaProviders: {
+        lastEpisodeReleased: number | null
+      }[]
+    })[]
+    totalItems: number
+  } | null> {
+    const whereClause: Prisma.ManhwasWhereInput = {
+      name: {
+        mode: 'insensitive',
+        contains: name,
       },
+    }
+
+    if (genre) {
+      whereClause.genre = {
+        path: ['genres'],
+        array_contains: genre,
+      }
+    }
+
+    if (status) {
+      whereClause.status = status
+    }
+
+    const manhwa = await prisma.manhwas.findMany({
+      where: whereClause,
       include: {
         manhwaProviders: true,
       },
     })
 
-    return manhwa
+    const totalItems = await prisma.manhwas.count({
+      where: whereClause,
+    })
+
+    return {
+      items: manhwa,
+      totalItems,
+    }
   }
 
   findByIDAndUpdate(

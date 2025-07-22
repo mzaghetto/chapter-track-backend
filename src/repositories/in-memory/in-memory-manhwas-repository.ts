@@ -46,18 +46,28 @@ export class InMemoryManhwasRepository implements ManhwasRepository {
     return Promise.resolve(manhwa)
   }
 
-  async filterByName(name: string): Promise<
-    | (Manhwas & {
-        manhwaProviders: {
-          lastEpisodeReleased: number | null
-        }[]
-      })[]
-    | null
-  > {
-    const filteredItems = this.items.filter((item) => item.name.includes(name))
+  async filterByName(
+    name: string,
+    genre?: string,
+    status?: 'ONGOING' | 'COMPLETED' | 'HIATUS',
+  ): Promise<{
+    items: (Manhwas & {
+      manhwaProviders: {
+        lastEpisodeReleased: number | null
+      }[]
+    })[]
+    totalItems: number
+  } | null> {
+    let filteredItems = this.items.filter((item) => item.name.includes(name))
 
-    if (filteredItems.length === 0 || !filteredItems) {
-      return Promise.resolve(null)
+    if (genre) {
+      filteredItems = filteredItems.filter((item) =>
+        JSON.stringify(item.genre).includes(genre),
+      )
+    }
+
+    if (status) {
+      filteredItems = filteredItems.filter((item) => item.status === status)
     }
 
     const itemsWithProviders = filteredItems.map((manhwa) => {
@@ -75,7 +85,10 @@ export class InMemoryManhwasRepository implements ManhwasRepository {
       }
     })
 
-    return Promise.resolve(itemsWithProviders)
+    return {
+      items: itemsWithProviders,
+      totalItems: itemsWithProviders.length,
+    }
   }
 
   async findByID(manhwaID: bigint): Promise<
