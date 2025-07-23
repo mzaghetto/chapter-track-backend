@@ -89,6 +89,57 @@ export class InMemoryManhwaProviderRepository
       }))
   }
 
+  async findAllPaginated(filters: FindAllFilters): Promise<{
+    manhwaProviders: DetailedManhwaProvider[]
+    totalCount: number
+  }> {
+    const {
+      page = 1,
+      pageSize = 10,
+      manhwaId,
+      providerId,
+      manhwaName,
+      providerName,
+    } = filters
+
+    const filteredItems = this.items.filter(
+      (item) =>
+        (!manhwaId || item.manhwaId === manhwaId) &&
+        (!providerId || item.providerId === providerId) &&
+        (!manhwaName ||
+          (item.manhwa &&
+            item.manhwa.name
+              .toLowerCase()
+              .includes(manhwaName.toLowerCase()))) &&
+        (!providerName ||
+          (item.provider &&
+            item.provider.name
+              .toLowerCase()
+              .includes(providerName.toLowerCase()))),
+    )
+
+    const totalCount = filteredItems.length
+    const startIndex = (page - 1) * pageSize
+    const endIndex = startIndex + pageSize
+
+    const paginatedItems = filteredItems.slice(startIndex, endIndex)
+
+    return {
+      manhwaProviders: paginatedItems.map((manhwaProvider) => ({
+        id: manhwaProvider.id,
+        manhwaId: manhwaProvider.manhwaId,
+        manhwaName: manhwaProvider.manhwa?.name || '',
+        providerId: manhwaProvider.providerId,
+        providerName: manhwaProvider.provider?.name || '',
+        lastEpisodeReleased: manhwaProvider.lastEpisodeReleased,
+        url: manhwaProvider.url,
+        createdAt: manhwaProvider.createdAt,
+        updatedAt: manhwaProvider.updatedAt,
+      })),
+      totalCount,
+    }
+  }
+
   async update(
     id: bigint,
     data: Prisma.ManhwaProviderUpdateInput,

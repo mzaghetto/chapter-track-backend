@@ -28,9 +28,13 @@ describe('Get Manhwa Providers Use Case', () => {
       { name: 'Provider Z' },
     )
 
-    const { manhwaProviders } = await sut.execute({})
+    const { manhwaProviders, totalCount } = await sut.execute({
+      page: 1,
+      pageSize: 10,
+    })
 
     expect(manhwaProviders).toHaveLength(3)
+    expect(totalCount).toBe(3)
     expect(manhwaProviders[0]).toEqual(
       expect.objectContaining({
         manhwaName: 'Manhwa A',
@@ -56,7 +60,11 @@ describe('Get Manhwa Providers Use Case', () => {
       { name: 'Provider Z' },
     )
 
-    const { manhwaProviders } = await sut.execute({ manhwaId: 1n })
+    const { manhwaProviders } = await sut.execute({
+      manhwaId: 1n,
+      page: 1,
+      pageSize: 10,
+    })
 
     expect(manhwaProviders).toHaveLength(2)
     expect(manhwaProviders[0].manhwaId).toBe(1n)
@@ -80,7 +88,11 @@ describe('Get Manhwa Providers Use Case', () => {
       { name: 'Provider Z' },
     )
 
-    const { manhwaProviders } = await sut.execute({ providerId: 2n })
+    const { manhwaProviders } = await sut.execute({
+      providerId: 2n,
+      page: 1,
+      pageSize: 10,
+    })
 
     expect(manhwaProviders).toHaveLength(1)
     expect(manhwaProviders[0].providerId).toBe(2n)
@@ -98,7 +110,11 @@ describe('Get Manhwa Providers Use Case', () => {
       { name: 'Provider Y' },
     )
 
-    const { manhwaProviders } = await sut.execute({ manhwaName: 'Manhwa A' })
+    const { manhwaProviders } = await sut.execute({
+      manhwaName: 'Manhwa A',
+      page: 1,
+      pageSize: 10,
+    })
 
     expect(manhwaProviders).toHaveLength(1)
     expect(manhwaProviders[0].manhwaName).toBe('Manhwa A')
@@ -118,6 +134,8 @@ describe('Get Manhwa Providers Use Case', () => {
 
     const { manhwaProviders } = await sut.execute({
       providerName: 'Provider X',
+      page: 1,
+      pageSize: 10,
     })
 
     expect(manhwaProviders).toHaveLength(1)

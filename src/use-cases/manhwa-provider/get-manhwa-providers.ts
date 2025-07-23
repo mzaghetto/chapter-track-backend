@@ -6,10 +6,13 @@ interface GetManhwaProvidersUseCaseRequest {
   providerId?: bigint
   manhwaName?: string
   providerName?: string
+  page: number
+  pageSize: number
 }
 
 interface GetManhwaProvidersUseCaseResponse {
   manhwaProviders: DetailedManhwaProvider[]
+  totalCount: number
 }
 
 export class GetManhwaProvidersUseCase {
@@ -20,16 +23,22 @@ export class GetManhwaProvidersUseCase {
     providerId,
     manhwaName,
     providerName,
+    page,
+    pageSize,
   }: GetManhwaProvidersUseCaseRequest): Promise<GetManhwaProvidersUseCaseResponse> {
-    const manhwaProviders = await this.manhwaProviderRepository.findAll({
-      manhwaId,
-      providerId,
-      manhwaName,
-      providerName,
-    })
+    const { manhwaProviders, totalCount } =
+      await this.manhwaProviderRepository.findAllPaginated({
+        manhwaId,
+        providerId,
+        manhwaName,
+        providerName,
+        page,
+        pageSize,
+      })
 
     return {
       manhwaProviders,
+      totalCount,
     }
   }
 }

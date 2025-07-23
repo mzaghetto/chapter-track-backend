@@ -84,6 +84,83 @@ export class PrismaManhwaProviderRepository
     }))
   }
 
+  async findAllPaginated(filters: FindAllFilters): Promise<{
+    manhwaProviders: DetailedManhwaProvider[]
+    totalCount: number
+  }> {
+    const { page = 1, pageSize = 10, ...whereFilters } = filters
+
+    const skip = (page - 1) * pageSize
+
+    const [manhwaProviders, totalCount] = await prisma.$transaction([
+      prisma.manhwaProvider.findMany({
+        where: {
+          manhwaId: whereFilters.manhwaId,
+          providerId: whereFilters.providerId,
+          ...(whereFilters.manhwaName && {
+            manhwa: {
+              name: {
+                contains: whereFilters.manhwaName,
+                mode: 'insensitive',
+              },
+            },
+          }),
+          ...(whereFilters.providerName && {
+            provider: {
+              name: {
+                contains: whereFilters.providerName,
+                mode: 'insensitive',
+              },
+            },
+          }),
+        },
+        include: {
+          manhwa: true,
+          provider: true,
+        },
+        skip,
+        take: pageSize,
+      }),
+      prisma.manhwaProvider.count({
+        where: {
+          manhwaId: whereFilters.manhwaId,
+          providerId: whereFilters.providerId,
+          ...(whereFilters.manhwaName && {
+            manhwa: {
+              name: {
+                contains: whereFilters.manhwaName,
+                mode: 'insensitive',
+              },
+            },
+          }),
+          ...(whereFilters.providerName && {
+            provider: {
+              name: {
+                contains: whereFilters.providerName,
+                mode: 'insensitive',
+              },
+            },
+          }),
+        },
+      }),
+    ])
+
+    return {
+      manhwaProviders: manhwaProviders.map((manhwaProvider) => ({
+        id: manhwaProvider.id,
+        manhwaId: manhwaProvider.manhwaId,
+        manhwaName: manhwaProvider.manhwa.name,
+        providerId: manhwaProvider.providerId,
+        providerName: manhwaProvider.provider.name,
+        lastEpisodeReleased: manhwaProvider.lastEpisodeReleased,
+        url: manhwaProvider.url,
+        createdAt: manhwaProvider.createdAt,
+        updatedAt: manhwaProvider.updatedAt,
+      })),
+      totalCount,
+    }
+  }
+
   async update(
     id: bigint,
     data: Prisma.ManhwaProviderUpdateInput,

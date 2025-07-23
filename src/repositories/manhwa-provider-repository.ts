@@ -6,6 +6,8 @@ export interface FindAllFilters {
   providerId?: bigint
   manhwaName?: string
   providerName?: string
+  page?: number
+  pageSize?: number
 }
 
 export interface ManhwaProviderRepository {
@@ -18,6 +20,9 @@ export interface ManhwaProviderRepository {
   ): Promise<ManhwaProvider | null>
   findById(id: bigint): Promise<ManhwaProvider | null>
   findAll(filters: FindAllFilters): Promise<DetailedManhwaProvider[]>
+  findAllPaginated(
+    filters: FindAllFilters,
+  ): Promise<{ manhwaProviders: DetailedManhwaProvider[]; totalCount: number }>
   update(
     id: bigint,
     data: Prisma.ManhwaProviderUpdateInput,
