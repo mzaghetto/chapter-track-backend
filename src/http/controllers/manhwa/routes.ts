@@ -7,6 +7,7 @@ import { filterManhwa } from './filter-manhwa'
 import { triggerNotification } from './trigger-notification'
 import { deleteManhwa } from './delete-manhwa'
 import { getManhwaById } from './get-manhwa-by-id'
+import { manhwaRandom } from './manhwa-random'
 
 export async function manhwaRoutes(app: FastifyInstance) {
   app.post(
@@ -16,6 +17,8 @@ export async function manhwaRoutes(app: FastifyInstance) {
   )
 
   app.get('/manhwa/list', { onRequest: [verifyJWT] }, filterManhwa)
+
+  app.get('/manhwa/random', manhwaRandom)
 
   app.patch(
     '/manhwa/:manhwaID/update',

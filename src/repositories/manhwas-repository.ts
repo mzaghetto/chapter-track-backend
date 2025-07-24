@@ -29,4 +29,5 @@ export interface ManhwasRepository {
   >
   findByIDs(manhwasID: bigint[]): Promise<Manhwas[] | null>
   delete(id: bigint): Promise<void>
+  findRandom(count: number): Promise<Manhwas[]>
 }

@@ -155,6 +155,11 @@ export class InMemoryManhwasRepository implements ManhwasRepository {
     return Promise.resolve(this.items[indexOfManhwa])
   }
 
+  async findRandom(count: number): Promise<Manhwas[]> {
+    const shuffled = this.items.sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
+  }
+
   async delete(id: bigint): Promise<void> {
     const index = this.items.findIndex((item) => item.id === id)
     if (index > -1) {

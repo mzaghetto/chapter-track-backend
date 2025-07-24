@@ -123,4 +123,20 @@ export class PrismaManhwasRepository implements ManhwasRepository {
       },
     })
   }
+
+  async findRandom(count: number): Promise<Manhwas[]> {
+    const totalManhwas = await prisma.manhwas.count()
+    if (totalManhwas === 0) {
+      return []
+    }
+
+    const skip = Math.floor(Math.random() * Math.max(0, totalManhwas - count))
+
+    const randomManhwas = await prisma.manhwas.findMany({
+      take: count,
+      skip,
+    })
+
+    return randomManhwas
+  }
 }
