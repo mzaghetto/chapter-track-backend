@@ -8,6 +8,7 @@ export interface DetailedUserManhwa {
   providerId: bigint | null
   providerName: string | null
   lastEpisodeReleased: number | null
+  lastEpisodeReleasedAllProviders: number | null
   manhwaUrlProvider: string | null
   statusReading: UserManhwaStatus
   statusManhwa: ManhwaStatus | null

@@ -46,6 +46,17 @@ export class PrismaUserManhwaRepository implements UserManhwaRepository {
       },
     })
 
+    const manhwaProvidersGrouped = manhwaProviders.reduce(
+      (acc, manhwaProvider) => {
+        if (!acc[manhwaProvider.manhwaId.toString()]) {
+          acc[manhwaProvider.manhwaId.toString()] = []
+        }
+        acc[manhwaProvider.manhwaId.toString()].push(manhwaProvider)
+        return acc
+      },
+      {} as Record<string, any[]>,
+    )
+
     const userNotifications = await prisma.userNotifications.findMany({
       where: {
         userId,
@@ -57,10 +68,18 @@ export class PrismaUserManhwaRepository implements UserManhwaRepository {
 
     return userManhwas.map((userManhwa) => {
       const manhwaProvider = manhwaProviders.find(
-        (mp) => mp.manhwaId === userManhwa.manhwaId,
+        (mp) =>
+          mp.manhwaId === userManhwa.manhwaId &&
+          mp.providerId === userManhwa.providerId,
       )
       const userNotification = userNotifications.find(
         (un) => un.manhwaId === userManhwa.manhwaId,
+      )
+
+      const lastEpisodeReleasedAllProviders = Math.max(
+        ...manhwaProvidersGrouped[userManhwa.manhwaId.toString()].map(
+          (mp) => mp.lastEpisodeReleased,
+        ),
       )
 
       return {
@@ -71,6 +90,7 @@ export class PrismaUserManhwaRepository implements UserManhwaRepository {
         providerId: userManhwa.providerId,
         providerName: userManhwa.provider?.name ?? null,
         lastEpisodeReleased: manhwaProvider?.lastEpisodeReleased ?? null,
+        lastEpisodeReleasedAllProviders,
         manhwaUrlProvider: manhwaProvider?.url ?? null,
         statusReading: userManhwa.status,
         statusManhwa: userManhwa.manhwa.status,
