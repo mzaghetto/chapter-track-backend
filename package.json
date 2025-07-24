@@ -6,7 +6,7 @@
   "scripts": {
     "start:dev": "tsx watch --inspect src/server.ts",
     "start": "node build/server.js",
-    "build": "npx tsup src --out-dir build",
+    "build": "npm install typescript && npx tsup src --out-dir build",
     "test": "vitest run --dir src/use-cases",
     "test:watch": "vitest --dir src/use-cases",
     "test:coverage": "vitest run --coverage",
@@ -32,7 +32,6 @@
     "supertest": "6.3.3",
     "tsup": "6.7.0",
     "tsx": "3.12.6",
-    
     "vite-tsconfig-paths": "4.2.0",
     "vitest": "0.30.1"
   },
