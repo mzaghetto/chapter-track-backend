@@ -1,5 +1,5 @@
 {
-  "name": "manga-toread-api-typescript",
+  "name": "chapter-track-backend",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -14,7 +14,7 @@
     "docker:start": "docker-compose up --build",
     "docker:up": "docker-compose up --build -d",
     "docker:down": "docker-compose down",
-    "prepare": "husky install"
+    "prepare": "npx husky install"
   },
   "keywords": [],
   "author": "",
