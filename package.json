@@ -6,7 +6,7 @@
   "scripts": {
     "start:dev": "tsx watch --inspect src/server.ts",
     "start": "node build/server.js",
-    "build": "npm install typescript && npx tsup src --out-dir build",
+    "build": "npm install typescript && npx tsup src --out-dir build --external vitest",
     "test": "vitest run --dir src/use-cases",
     "test:watch": "vitest --dir src/use-cases",
     "test:coverage": "vitest run --coverage",
