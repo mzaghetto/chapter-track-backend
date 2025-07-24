@@ -19,7 +19,7 @@ export async function refresh(request: FastifyRequest, reply: FastifyReply) {
     {
       sign: {
         sub: request.user.sub,
-        expiresIn: '7d',
+        expiresIn: '10m',
       },
     },
   )
