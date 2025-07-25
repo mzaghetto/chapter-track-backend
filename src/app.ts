@@ -14,12 +14,14 @@ import bigintSerializer from './plugins/bigint-serializer'
 export const app = fastify()
 
 app.register(fastifyCors, {
-  origin: env.FRONTEND_URL ? [env.FRONTEND_URL, 'http://localhost:3000'] : '*',
+  origin: process.env.GOOGLE_CLIENT_ID
+    ? [process.env.GOOGLE_CLIENT_ID, 'http://localhost:3000']
+    : '*',
   credentials: true,
 })
 
 app.register(fastifyJwt, {
-  secret: env.JWT_SECRET,
+  secret: process.env.JWT_SECRET,
   cookie: {
     cookieName: 'refreshToken',
     signed: false,
