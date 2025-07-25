@@ -60,6 +60,7 @@ export class InMemoryUserManhwaRepository implements UserManhwaRepository {
         lastEpisodeRead: um.lastEpisodeRead,
         lastNotifiedEpisode: um.lastNotifiedEpisode,
         isTelegramNotificationEnabled: false,
+        lastEpisodeReleasedAllProviders: 100, // Placeholder for in-memory
         order: um.order,
         lastUpdated: um.lastUpdated,
         createdAt: um.createdAt,

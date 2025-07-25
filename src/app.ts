@@ -14,7 +14,7 @@ import bigintSerializer from './plugins/bigint-serializer'
 export const app = fastify()
 
 app.register(fastifyCors, {
-  origin: '*',
+  origin: env.FRONTEND_URL ? [env.FRONTEND_URL, 'http://localhost:3000'] : '*',
   credentials: true,
 })
 

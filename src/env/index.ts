@@ -6,6 +6,7 @@ const envSchema = z.object({
   PORT: z.coerce.number().default(5001),
   JWT_SECRET: z.string(),
   TELEGRAM_BOT_TOKEN: z.string(),
+  FRONTEND_URL: z.string().optional(),
 })
 
 const _env = envSchema.safeParse(process.env)
