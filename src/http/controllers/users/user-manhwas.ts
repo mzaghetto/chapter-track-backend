@@ -10,9 +10,15 @@ export async function userManhwas(
   const userManhwasBodySchema = z.object({
     page: z.coerce.number().optional().default(1),
     pageSize: z.coerce.number().optional().default(20),
+    status: z.enum(['ONGOING', 'COMPLETED', 'HIATUS']).optional(),
+    userStatus: z
+      .enum(['READING', 'PAUSED', 'DROPPED', 'COMPLETED'])
+      .optional(),
   })
 
-  const { page, pageSize } = userManhwasBodySchema.parse(request.query)
+  const { page, pageSize, status, userStatus } = userManhwasBodySchema.parse(
+    request.query,
+  )
 
   try {
     const getManhwasOfUser = makeGetUserManhwasUseCase()
@@ -21,6 +27,8 @@ export async function userManhwas(
       userId: BigInt(request.user.sub),
       page,
       pageSize,
+      status,
+      userStatus,
     })
 
     return reply.status(200).send({

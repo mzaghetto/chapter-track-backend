@@ -7,6 +7,8 @@ interface GetUserManhwasUseCaseRequest {
   userId: bigint
   page: number
   pageSize: number
+  status?: 'ONGOING' | 'COMPLETED' | 'HIATUS'
+  userStatus?: 'READING' | 'PAUSED' | 'DROPPED' | 'COMPLETED'
 }
 
 interface GetUserManhwasUseCaseResponse {
@@ -24,6 +26,8 @@ export class GetUserManhwasUseCase {
     userId,
     page,
     pageSize,
+    status,
+    userStatus,
   }: GetUserManhwasUseCaseRequest): Promise<GetUserManhwasUseCaseResponse> {
     const user = await this.usersRepository.findByID(userId)
     if (!user) {
@@ -34,8 +38,14 @@ export class GetUserManhwasUseCase {
       userId,
       page,
       pageSize,
+      status,
+      userStatus,
     )
-    const total = await this.userManhwaRepository.countByUserId(userId)
+    const total = await this.userManhwaRepository.countByUserId(
+      userId,
+      status,
+      userStatus,
+    )
 
     return {
       userManhwas,

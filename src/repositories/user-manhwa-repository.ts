@@ -11,9 +11,18 @@ export interface UserManhwaRepository {
     userId: bigint,
     page: number,
     pageSize: number,
+    status?: 'ONGOING' | 'COMPLETED' | 'HIATUS',
+    userStatus?: 'READING' | 'PAUSED' | 'DROPPED' | 'COMPLETED',
   ): Promise<DetailedUserManhwa[]>
-  update(id: bigint, data: Prisma.UserManhwaUncheckedUpdateInput): Promise<UserManhwa>
+  update(
+    id: bigint,
+    data: Prisma.UserManhwaUncheckedUpdateInput,
+  ): Promise<UserManhwa>
   delete(id: bigint): Promise<void>
-  countByUserId(userId: bigint): Promise<number>
+  countByUserId(
+    userId: bigint,
+    status?: 'ONGOING' | 'COMPLETED' | 'HIATUS',
+    userStatus?: 'READING' | 'PAUSED' | 'DROPPED' | 'COMPLETED',
+  ): Promise<number>
   findManyByUserId(userId: bigint): Promise<UserManhwa[]>
 }
