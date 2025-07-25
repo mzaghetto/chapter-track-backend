@@ -34,6 +34,10 @@ app.register(providerRoutes)
 app.register(manhwaProviderRoutes)
 app.register(telegramRoutes)
 
+app.get('/health', async (request, reply) => {
+  return reply.status(200).send({ status: 'ok' })
+})
+
 app.setErrorHandler((error, _, reply) => {
   if (error instanceof ZodError) {
     return reply
