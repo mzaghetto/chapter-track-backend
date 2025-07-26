@@ -13,6 +13,7 @@ export interface UserManhwaRepository {
     pageSize: number,
     status?: 'ONGOING' | 'COMPLETED' | 'HIATUS',
     userStatus?: 'READING' | 'PAUSED' | 'DROPPED' | 'COMPLETED',
+    manhwaName?: string,
   ): Promise<DetailedUserManhwa[]>
   update(
     id: bigint,
@@ -23,6 +24,7 @@ export interface UserManhwaRepository {
     userId: bigint,
     status?: 'ONGOING' | 'COMPLETED' | 'HIATUS',
     userStatus?: 'READING' | 'PAUSED' | 'DROPPED' | 'COMPLETED',
+    manhwaName?: string,
   ): Promise<number>
   findManyByUserId(userId: bigint): Promise<UserManhwa[]>
 }

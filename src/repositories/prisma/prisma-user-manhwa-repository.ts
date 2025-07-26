@@ -25,6 +25,7 @@ export class PrismaUserManhwaRepository implements UserManhwaRepository {
     pageSize: number,
     status?: 'ONGOING' | 'COMPLETED' | 'HIATUS',
     userStatus?: 'READING' | 'PAUSED' | 'DROPPED' | 'COMPLETED',
+    manhwaName?: string,
   ): Promise<DetailedUserManhwa[]> {
     const whereClause: Prisma.UserManhwaWhereInput = { userId }
 
@@ -36,6 +37,16 @@ export class PrismaUserManhwaRepository implements UserManhwaRepository {
 
     if (userStatus) {
       whereClause.status = userStatus
+    }
+
+    if (manhwaName) {
+      whereClause.manhwa = {
+        ...(whereClause.manhwa as object),
+        name: {
+          contains: manhwaName,
+          mode: 'insensitive',
+        },
+      }
     }
 
     const userManhwas = await prisma.userManhwa.findMany({
@@ -137,6 +148,7 @@ export class PrismaUserManhwaRepository implements UserManhwaRepository {
     userId: bigint,
     status?: 'ONGOING' | 'COMPLETED' | 'HIATUS',
     userStatus?: 'READING' | 'PAUSED' | 'DROPPED' | 'COMPLETED',
+    manhwaName?: string,
   ): Promise<number> {
     const whereClause: Prisma.UserManhwaWhereInput = { userId }
 
@@ -148,6 +160,16 @@ export class PrismaUserManhwaRepository implements UserManhwaRepository {
 
     if (userStatus) {
       whereClause.status = userStatus
+    }
+
+    if (manhwaName) {
+      whereClause.manhwa = {
+        ...(whereClause.manhwa as object),
+        name: {
+          contains: manhwaName,
+          mode: 'insensitive',
+        },
+      }
     }
 
     return prisma.userManhwa.count({ where: whereClause })

@@ -41,31 +41,49 @@ export class InMemoryUserManhwaRepository implements UserManhwaRepository {
     userId: bigint,
     page: number,
     pageSize: number,
+    status?: 'ONGOING' | 'COMPLETED' | 'HIATUS',
+    userStatus?: 'READING' | 'PAUSED' | 'DROPPED' | 'COMPLETED',
+    manhwaName?: string,
   ): Promise<DetailedUserManhwa[]> {
-    const userManhwas = this.items.filter((item) => item.userId === userId)
+    let userManhwas = this.items.filter((item) => item.userId === userId)
 
-    return userManhwas
-      .slice((page - 1) * pageSize, page * pageSize)
-      .map((um) => ({
-        id: um.id,
-        manhwaId: um.manhwaId,
-        manhwaName: 'Test Manhwa',
-        coverImage: 'test.jpg',
-        providerId: 1n,
-        providerName: 'Test Provider',
-        lastEpisodeReleased: 100,
-        manhwaUrlProvider: 'test.com',
-        statusReading: um.status,
-        statusManhwa: 'ONGOING',
-        lastEpisodeRead: um.lastEpisodeRead,
-        lastNotifiedEpisode: um.lastNotifiedEpisode,
-        isTelegramNotificationEnabled: false,
-        lastEpisodeReleasedAllProviders: 100, // Placeholder for in-memory
-        order: um.order,
-        lastUpdated: um.lastUpdated,
-        createdAt: um.createdAt,
-        updatedAt: um.updatedAt,
-      }))
+    if (status) {
+      // In-memory doesn't have manhwa status, so this won't filter anything unless we mock it
+    }
+
+    if (userStatus) {
+      userManhwas = userManhwas.filter((item) => item.status === userStatus)
+    }
+
+    // Mock DetailedUserManhwa for filtering and then apply filter
+    let detailedManhwas: DetailedUserManhwa[] = userManhwas.map((um) => ({
+      id: um.id,
+      manhwaId: um.manhwaId,
+      manhwaName: `Mock Manhwa ${um.manhwaId}`, // Mocked name for in-memory
+      coverImage: 'test.jpg',
+      providerId: 1n,
+      providerName: 'Test Provider',
+      lastEpisodeReleased: 100,
+      manhwaUrlProvider: 'test.com',
+      statusReading: um.status,
+      statusManhwa: 'ONGOING',
+      lastEpisodeRead: um.lastEpisodeRead,
+      lastNotifiedEpisode: um.lastNotifiedEpisode,
+      isTelegramNotificationEnabled: false,
+      lastEpisodeReleasedAllProviders: 100, // Placeholder for in-memory
+      order: um.order,
+      lastUpdated: um.lastUpdated,
+      createdAt: um.createdAt,
+      updatedAt: um.updatedAt,
+    }))
+
+    if (manhwaName) {
+      detailedManhwas = detailedManhwas.filter((item) =>
+        item.manhwaName?.toLowerCase().includes(manhwaName.toLowerCase()),
+      )
+    }
+
+    return detailedManhwas.slice((page - 1) * pageSize, page * pageSize)
   }
 
   async update(
@@ -93,8 +111,51 @@ export class InMemoryUserManhwaRepository implements UserManhwaRepository {
     }
   }
 
-  async countByUserId(userId: bigint): Promise<number> {
-    return this.items.filter((item) => item.userId === userId).length
+  async countByUserId(
+    userId: bigint,
+    status?: 'ONGOING' | 'COMPLETED' | 'HIATUS',
+    userStatus?: 'READING' | 'PAUSED' | 'DROPPED' | 'COMPLETED',
+    manhwaName?: string,
+  ): Promise<number> {
+    let userManhwas = this.items.filter((item) => item.userId === userId)
+
+    if (status) {
+      // In-memory doesn't have manhwa status, so this won't filter anything unless we mock it
+    }
+
+    if (userStatus) {
+      userManhwas = userManhwas.filter((item) => item.status === userStatus)
+    }
+
+    // Mock DetailedUserManhwa for filtering and then apply filter
+    let detailedManhwas: DetailedUserManhwa[] = userManhwas.map((um) => ({
+      id: um.id,
+      manhwaId: um.manhwaId,
+      manhwaName: `Mock Manhwa ${um.manhwaId}`, // Mocked name for in-memory
+      coverImage: 'test.jpg',
+      providerId: 1n,
+      providerName: 'Test Provider',
+      lastEpisodeReleased: 100,
+      manhwaUrlProvider: 'test.com',
+      statusReading: um.status,
+      statusManhwa: 'ONGOING',
+      lastEpisodeRead: um.lastEpisodeRead,
+      lastNotifiedEpisode: um.lastNotifiedEpisode,
+      isTelegramNotificationEnabled: false,
+      lastEpisodeReleasedAllProviders: 100, // Placeholder for in-memory
+      order: um.order,
+      lastUpdated: um.lastUpdated,
+      createdAt: um.createdAt,
+      updatedAt: um.updatedAt,
+    }))
+
+    if (manhwaName) {
+      detailedManhwas = detailedManhwas.filter((item) =>
+        item.manhwaName?.toLowerCase().includes(manhwaName.toLowerCase()),
+      )
+    }
+
+    return detailedManhwas.length
   }
 
   async findManyByUserId(userId: bigint): Promise<UserManhwa[]> {

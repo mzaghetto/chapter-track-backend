@@ -14,11 +14,11 @@ export async function userManhwas(
     userStatus: z
       .enum(['READING', 'PAUSED', 'DROPPED', 'COMPLETED'])
       .optional(),
+    manhwaName: z.string().optional(),
   })
 
-  const { page, pageSize, status, userStatus } = userManhwasBodySchema.parse(
-    request.query,
-  )
+  const { page, pageSize, status, userStatus, manhwaName } =
+    userManhwasBodySchema.parse(request.query)
 
   try {
     const getManhwasOfUser = makeGetUserManhwasUseCase()
@@ -29,6 +29,7 @@ export async function userManhwas(
       pageSize,
       status,
       userStatus,
+      manhwaName,
     })
 
     return reply.status(200).send({
