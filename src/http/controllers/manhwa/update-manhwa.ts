@@ -19,12 +19,20 @@ export async function updateManhwa(
     coverImage: z.string().optional().nullable(),
     description: z.string().optional().nullable(),
     status: z.enum(['ONGOING', 'COMPLETED', 'HIATUS']).optional().nullable(),
+    alternativeNames: z.array(z.string()).optional().nullable(),
   })
 
   const { manhwaID } = updateManhwaParamsSchema.parse(request.params)
 
-  const { name, author, genre, coverImage, description, status } =
-    updateManhwaBodySchema.parse(request.body)
+  const {
+    name,
+    author,
+    genre,
+    coverImage,
+    description,
+    status,
+    alternativeNames,
+  } = updateManhwaBodySchema.parse(request.body)
 
   try {
     const updateManhwaUseCase = makeUpdateManhwaUseCase()
@@ -36,6 +44,7 @@ export async function updateManhwa(
       coverImage,
       description,
       status,
+      alternativeNames: alternativeNames || [],
     }
 
     const { manhwa } = await updateManhwaUseCase.execute({ manhwaID, data })

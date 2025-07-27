@@ -1,7 +1,7 @@
 import { Manhwas, Prisma } from '@prisma/client'
 import { ManhwasRepository } from '@/repositories/manhwas-repository'
 import { ManhwaAlreadyExistsError } from '@/use-cases/errors/manhwa-already-exists-error'
-import { parseGenre } from '@/utils/genre-parser'
+import { parseStringArray } from '@/utils/string-array-parser'
 
 interface RegisterManhwaUseCaseRequest {
   name: string
@@ -10,6 +10,7 @@ interface RegisterManhwaUseCaseRequest {
   coverImage?: string | null
   description?: string | null
   status?: 'ONGOING' | 'COMPLETED' | 'HIATUS' | null
+  alternativeNames?: string[] | null
 }
 
 interface RegisterManhwaUseCaseReponse {
@@ -26,6 +27,7 @@ export class RegisterManhwaUseCase {
     coverImage,
     description,
     status,
+    alternativeNames,
   }: RegisterManhwaUseCaseRequest): Promise<RegisterManhwaUseCaseReponse> {
     const manhwaAlreadyExists = await this.manhwasRepository.findByName(name)
 
@@ -33,7 +35,8 @@ export class RegisterManhwaUseCase {
       throw new ManhwaAlreadyExistsError()
     }
 
-    const processedGenre = parseGenre(genre)
+    const processedGenre = parseStringArray(genre)
+    const processedAlternativeNames = parseStringArray(alternativeNames)
 
     const manhwa = await this.manhwasRepository.create({
       name,
@@ -45,6 +48,10 @@ export class RegisterManhwaUseCase {
       coverImage,
       description,
       status,
+      alternativeNames:
+        processedAlternativeNames === null
+          ? undefined
+          : (processedAlternativeNames as Prisma.InputJsonValue),
     })
 
     return {

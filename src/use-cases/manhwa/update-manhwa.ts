@@ -2,7 +2,7 @@ import { Manhwas, Prisma } from '@prisma/client'
 import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found'
 import { ManhwasRepository } from '@/repositories/manhwas-repository'
 import { ManhwaAlreadyExistsError } from '@/use-cases/errors/manhwa-already-exists-error'
-import { parseGenre } from '@/utils/genre-parser'
+import { parseStringArray } from '@/utils/string-array-parser'
 
 interface UpdateManhwaUseCaseRequest {
   manhwaID: bigint
@@ -40,7 +40,8 @@ export class UpdateManhwaUseCase {
       }
     }
 
-    const processedGenre = parseGenre(data.genre)
+    const processedGenre = parseStringArray(data.genre)
+    const processedAlternativeNames = parseStringArray(data.alternativeNames)
 
     const updatedData = {
       ...data,
@@ -48,6 +49,10 @@ export class UpdateManhwaUseCase {
         processedGenre === null
           ? undefined
           : (processedGenre as Prisma.InputJsonValue),
+      alternativeNames:
+        processedAlternativeNames === null
+          ? undefined
+          : (processedAlternativeNames as Prisma.InputJsonValue),
     }
 
     const manhwa = await this.manhwasRepository.findByIDAndUpdate(

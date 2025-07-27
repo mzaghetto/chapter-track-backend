@@ -15,10 +15,18 @@ export async function createManhwa(
     coverImage: z.string().optional().nullable(),
     description: z.string().optional().nullable(),
     status: z.enum(['ONGOING', 'COMPLETED', 'HIATUS']).optional().nullable(),
+    alternativeNames: z.array(z.string()).optional().nullable(),
   })
 
-  const { name, author, genre, coverImage, description, status } =
-    registerManhwaBodySchema.parse(request.body)
+  const {
+    name,
+    author,
+    genre,
+    coverImage,
+    description,
+    status,
+    alternativeNames,
+  } = registerManhwaBodySchema.parse(request.body)
 
   try {
     const registerManhwaUseCase = makeRegisterManhwaUserUseCase()
@@ -30,6 +38,7 @@ export async function createManhwa(
       coverImage,
       description,
       status,
+      alternativeNames,
     })
 
     return reply.status(201).send({ manhwa })

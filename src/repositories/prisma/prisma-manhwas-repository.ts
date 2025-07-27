@@ -33,38 +33,50 @@ export class PrismaManhwasRepository implements ManhwasRepository {
     })[]
     totalItems: number
   } | null> {
-    const whereClause: Prisma.ManhwasWhereInput = {
-      name: {
-        mode: 'insensitive',
-        contains: name,
-      },
+    const whereConditions: string[] = []
+
+    if (name) {
+      whereConditions.push(
+        `("name" ILIKE '%${name}%' OR EXISTS(SELECT 1 FROM jsonb_array_elements_text("alternativeNames") AS elem WHERE elem ILIKE '%${name}%'))`,
+      )
     }
 
     if (genre) {
-      whereClause.genre = {
-        path: ['genres'],
-        array_contains: genre,
-      }
+      whereConditions.push(`"genre" @> '["${genre}"]'`)
     }
 
     if (status) {
-      whereClause.status = status
+      whereConditions.push(`"status" = '${status}'`)
     }
 
-    const manhwa = await prisma.manhwas.findMany({
-      where: whereClause,
-      include: {
-        manhwaProviders: true,
+    const whereClause =
+      whereConditions.length > 0 ? `WHERE ${whereConditions.join(' AND ')}` : ''
+
+    const manhwa = await prisma.$queryRaw<Manhwas[]>(
+      Prisma.sql`SELECT * FROM "Manhwas" ${Prisma.raw(whereClause)}`,
+    )
+
+    const manhwaIds = manhwa.map((m) => m.id)
+    const manhwaProviders = await prisma.manhwaProvider.findMany({
+      where: {
+        manhwaId: {
+          in: manhwaIds,
+        },
       },
     })
 
-    const totalItems = await prisma.manhwas.count({
-      where: whereClause,
-    })
+    const itemsWithProviders = manhwa.map((m) => ({
+      ...m,
+      manhwaProviders: manhwaProviders.filter((mp) => mp.manhwaId === m.id),
+    }))
+
+    const totalItems = await prisma.$queryRaw<[{ count: bigint }]>(
+      Prisma.sql`SELECT COUNT(*) FROM "Manhwas" ${Prisma.raw(whereClause)}`,
+    )
 
     return {
-      items: manhwa,
-      totalItems,
+      items: itemsWithProviders,
+      totalItems: Number(totalItems[0].count),
     }
   }
 

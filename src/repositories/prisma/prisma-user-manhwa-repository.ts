@@ -3,6 +3,13 @@ import { prisma } from '@/lib/prisma'
 import { UserManhwaRepository } from '../user-manhwa-repository'
 import { DetailedUserManhwa } from '../dtos/detailed-user-manhwa'
 
+interface RawUserManhwaQueryResult extends UserManhwa {
+  manhwaName: string
+  coverImage: string
+  statusManhwa: 'ONGOING' | 'COMPLETED' | 'HIATUS'
+  providerName: string | null
+}
+
 export class PrismaUserManhwaRepository implements UserManhwaRepository {
   async create(
     data: Prisma.UserManhwaUncheckedCreateInput,
@@ -27,40 +34,41 @@ export class PrismaUserManhwaRepository implements UserManhwaRepository {
     userStatus?: 'READING' | 'PAUSED' | 'DROPPED' | 'COMPLETED',
     manhwaName?: string,
   ): Promise<DetailedUserManhwa[]> {
-    const whereClause: Prisma.UserManhwaWhereInput = { userId }
+    const whereConditions: string[] = [`"userId" = ${userId}`]
 
     if (status) {
-      whereClause.manhwa = {
-        status,
-      }
+      whereConditions.push(`"manhwa"."status" = '${status}'`)
     }
 
     if (userStatus) {
-      whereClause.status = userStatus
+      whereConditions.push(`"status" = '${userStatus}'`)
     }
 
     if (manhwaName) {
-      whereClause.manhwa = {
-        ...(whereClause.manhwa as object),
-        name: {
-          contains: manhwaName,
-          mode: 'insensitive',
-        },
-      }
+      whereConditions.push(
+        `("manhwa"."name" ILIKE '%${manhwaName}%' OR EXISTS(SELECT 1 FROM jsonb_array_elements_text("manhwa"."alternativeNames") AS elem WHERE elem ILIKE '%${manhwaName}%'))`,
+      )
     }
 
-    const userManhwas = await prisma.userManhwa.findMany({
-      where: whereClause,
-      include: {
-        manhwa: true,
-        provider: true,
-      },
-      skip: (page - 1) * pageSize,
-      take: pageSize,
-      orderBy: {
-        order: 'asc',
-      },
-    })
+    const whereClause =
+      whereConditions.length > 0 ? `WHERE ${whereConditions.join(' AND ')}` : ''
+
+    const userManhwas = await prisma.$queryRaw<
+      RawUserManhwaQueryResult[]
+    >(Prisma.sql`
+      SELECT
+        "UserManhwa".*,
+        "Manhwas".name AS manhwaName,
+        "Manhwas"."coverImage" AS coverImage,
+        "Manhwas".status AS statusManhwa,
+        "Providers".name AS providerName
+      FROM "UserManhwa"
+      JOIN "Manhwas" ON "UserManhwa"."manhwaId" = "Manhwas".id
+      LEFT JOIN "Providers" ON "UserManhwa"."providerId" = "Providers".id
+      ${Prisma.raw(whereClause)}
+      ORDER BY "UserManhwa".order ASC
+      OFFSET ${(page - 1) * pageSize} LIMIT ${pageSize}
+    `)
 
     const manhwaIds = userManhwas.map((um) => um.manhwaId)
     const manhwaProviders = await prisma.manhwaProvider.findMany({
@@ -110,15 +118,15 @@ export class PrismaUserManhwaRepository implements UserManhwaRepository {
       return {
         id: userManhwa.id,
         manhwaId: userManhwa.manhwaId,
-        manhwaName: userManhwa.manhwa.name,
-        coverImage: userManhwa.manhwa.coverImage,
+        manhwaName: userManhwa.manhwaName,
+        coverImage: userManhwa.coverImage,
         providerId: userManhwa.providerId,
-        providerName: userManhwa.provider?.name ?? null,
-        lastEpisodeReleased: manhwaProvider?.lastEpisodeReleased ?? null,
+        providerName: userManhwa.providerName ?? null,
+        lastEpisodeReleased: lastEpisodeReleasedAllProviders,
         lastEpisodeReleasedAllProviders,
         manhwaUrlProvider: manhwaProvider?.url ?? null,
         statusReading: userManhwa.status,
-        statusManhwa: userManhwa.manhwa.status,
+        statusManhwa: userManhwa.statusManhwa,
         lastEpisodeRead: userManhwa.lastEpisodeRead,
         lastNotifiedEpisode: userManhwa.lastNotifiedEpisode,
         isTelegramNotificationEnabled: userNotification?.isEnabled ?? false,
@@ -150,29 +158,33 @@ export class PrismaUserManhwaRepository implements UserManhwaRepository {
     userStatus?: 'READING' | 'PAUSED' | 'DROPPED' | 'COMPLETED',
     manhwaName?: string,
   ): Promise<number> {
-    const whereClause: Prisma.UserManhwaWhereInput = { userId }
+    const whereConditions: string[] = [`"userId" = ${userId}`]
 
     if (status) {
-      whereClause.manhwa = {
-        status,
-      }
+      whereConditions.push(`"manhwa"."status" = '${status}'`)
     }
 
     if (userStatus) {
-      whereClause.status = userStatus
+      whereConditions.push(`"status" = '${userStatus}'`)
     }
 
     if (manhwaName) {
-      whereClause.manhwa = {
-        ...(whereClause.manhwa as object),
-        name: {
-          contains: manhwaName,
-          mode: 'insensitive',
-        },
-      }
+      whereConditions.push(
+        `("manhwa"."name" ILIKE '%${manhwaName}%' OR EXISTS(SELECT 1 FROM jsonb_array_elements_text("manhwa"."alternativeNames") AS elem WHERE elem ILIKE '%${manhwaName}%'))`,
+      )
     }
 
-    return prisma.userManhwa.count({ where: whereClause })
+    const whereClause =
+      whereConditions.length > 0 ? `WHERE ${whereConditions.join(' AND ')}` : ''
+
+    const totalItems = await prisma.$queryRaw<[{ count: bigint }]>(Prisma.sql`
+      SELECT COUNT(*)
+      FROM "UserManhwa"
+      JOIN "Manhwas" ON "UserManhwa"."manhwaId" = "Manhwas".id
+      ${Prisma.raw(whereClause)}
+    `)
+
+    return Number(totalItems[0].count)
   }
 
   async findManyByUserId(userId: bigint): Promise<UserManhwa[]> {

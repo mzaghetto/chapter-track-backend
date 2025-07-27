@@ -8,11 +8,7 @@ export interface ManhwasRepository {
     genre?: string,
     status?: 'ONGOING' | 'COMPLETED' | 'HIATUS',
   ): Promise<{
-    items: (Manhwas & {
-      manhwaProviders: {
-        lastEpisodeReleased: number | null
-      }[]
-    })[]
+    items: Manhwas[]
     totalItems: number
   } | null>
   findByIDAndUpdate(

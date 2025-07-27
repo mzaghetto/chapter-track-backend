@@ -1,6 +1,7 @@
 import { ManhwasRepository } from '@/repositories/manhwas-repository'
 import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found'
 import { Page, Pageable } from '@/lib/pageable'
+import { prisma } from '@/lib/prisma'
 
 interface FilterManhwasUseCaseRequest {
   nameToFilter?: string
@@ -17,6 +18,7 @@ interface manhwaListResponse {
   description: string | null
   status: 'ONGOING' | 'COMPLETED' | 'HIATUS' | null
   coverImage: string | null | undefined
+  alternativeNames: string[] | null
   lastEpisodeReleased?: number
 }
 
@@ -53,7 +55,30 @@ export class FilterManhwaByNameUseCase extends Pageable<manhwaListResponse> {
       throw new ResourceNotFoundError()
     }
 
+    const manhwaIds = manhwaFilteredByName.items.map((manhwa) => manhwa.id)
+
+    const manhwaProviders = await prisma.manhwaProvider.findMany({
+      where: {
+        manhwaId: {
+          in: manhwaIds,
+        },
+      },
+    })
+
     const items = manhwaFilteredByName.items.map((manhwa) => {
+      const providersForManhwa = manhwaProviders.filter(
+        (provider) => provider.manhwaId === manhwa.id,
+      )
+
+      const lastEpisodeReleased =
+        providersForManhwa.length > 0
+          ? Math.max(
+              ...providersForManhwa.map(
+                (provider) => provider.lastEpisodeReleased ?? 0,
+              ),
+            )
+          : undefined
+
       return {
         manhwaId: manhwa.id,
         manhwaName: manhwa.name,
@@ -62,14 +87,10 @@ export class FilterManhwaByNameUseCase extends Pageable<manhwaListResponse> {
         description: manhwa.description,
         status: manhwa.status,
         coverImage: manhwa.coverImage,
-        lastEpisodeReleased:
-          manhwa.manhwaProviders.length > 0
-            ? Math.max(
-                ...manhwa.manhwaProviders.map(
-                  (provider) => provider.lastEpisodeReleased ?? 0,
-                ),
-              )
-            : undefined,
+        alternativeNames: manhwa.alternativeNames
+          ? JSON.parse(JSON.stringify(manhwa.alternativeNames))
+          : null,
+        lastEpisodeReleased,
       }
     })
 
