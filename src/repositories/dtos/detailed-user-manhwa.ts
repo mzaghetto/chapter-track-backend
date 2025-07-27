@@ -3,7 +3,7 @@ import { ManhwaStatus, UserManhwaStatus } from '@prisma/client'
 export interface DetailedUserManhwa {
   id: bigint
   manhwaId: bigint
-  manhwaName: string
+  manhwaName: string | null
   coverImage: string | null
   providerId: bigint | null
   providerName: string | null

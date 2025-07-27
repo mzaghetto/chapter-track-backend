@@ -4,10 +4,11 @@ import { UserManhwaRepository } from '../user-manhwa-repository'
 import { DetailedUserManhwa } from '../dtos/detailed-user-manhwa'
 
 interface RawUserManhwaQueryResult extends UserManhwa {
-  manhwaName: string
-  coverImage: string
-  statusManhwa: 'ONGOING' | 'COMPLETED' | 'HIATUS'
+  manhwaname: string | null
+  coverimage: string | null
+  statusmanhwa: 'ONGOING' | 'COMPLETED' | 'HIATUS' | null
   providerName: string | null
+  alternativenames: string | null
 }
 
 export class PrismaUserManhwaRepository implements UserManhwaRepository {
@@ -37,16 +38,16 @@ export class PrismaUserManhwaRepository implements UserManhwaRepository {
     const whereConditions: string[] = [`"userId" = ${userId}`]
 
     if (status) {
-      whereConditions.push(`"manhwa"."status" = '${status}'`)
+      whereConditions.push(`"Manhwas"."status" = '${status}'`)
     }
 
     if (userStatus) {
-      whereConditions.push(`"status" = '${userStatus}'`)
+      whereConditions.push(`"UserManhwa"."status" = '${userStatus}'`)
     }
 
     if (manhwaName) {
       whereConditions.push(
-        `("manhwa"."name" ILIKE '%${manhwaName}%' OR EXISTS(SELECT 1 FROM jsonb_array_elements_text("manhwa"."alternativeNames") AS elem WHERE elem ILIKE '%${manhwaName}%'))`,
+        `("Manhwas"."name" ILIKE '%${manhwaName}%' OR EXISTS(SELECT 1 FROM jsonb_array_elements_text("Manhwas"."alternativeNames") AS elem WHERE elem ILIKE '%${manhwaName}%'))`,
       )
     }
 
@@ -57,10 +58,21 @@ export class PrismaUserManhwaRepository implements UserManhwaRepository {
       RawUserManhwaQueryResult[]
     >(Prisma.sql`
       SELECT
-        "UserManhwa".*,
+        "UserManhwa".id,
+        "UserManhwa"."userId",
+        "UserManhwa"."manhwaId",
+        "UserManhwa"."providerId",
+        "UserManhwa".status,
+        "UserManhwa"."lastEpisodeRead",
+        "UserManhwa"."lastNotifiedEpisode",
+        "UserManhwa".order,
+        "UserManhwa"."lastUpdated",
+        "UserManhwa"."createdAt",
+        "UserManhwa"."updatedAt",
         "Manhwas".name AS manhwaName,
         "Manhwas"."coverImage" AS coverImage,
         "Manhwas".status AS statusManhwa,
+        "Manhwas"."alternativeNames" AS alternativeNames,
         "Providers".name AS providerName
       FROM "UserManhwa"
       JOIN "Manhwas" ON "UserManhwa"."manhwaId" = "Manhwas".id
@@ -109,24 +121,29 @@ export class PrismaUserManhwaRepository implements UserManhwaRepository {
         (un) => un.manhwaId === userManhwa.manhwaId,
       )
 
-      const lastEpisodeReleasedAllProviders = Math.max(
-        ...manhwaProvidersGrouped[userManhwa.manhwaId.toString()].map(
-          (mp) => mp.lastEpisodeReleased,
-        ),
-      )
+      const releasedEpisodes =
+        manhwaProvidersGrouped[userManhwa.manhwaId.toString()]
+          ?.map((mp) => mp.lastEpisodeReleased)
+          .filter((ep) => ep !== null && ep !== undefined) || []
+
+      const lastEpisodeReleasedAllProviders =
+        releasedEpisodes.length > 0
+          ? Math.max(...(releasedEpisodes as number[]))
+          : null
 
       return {
         id: userManhwa.id,
         manhwaId: userManhwa.manhwaId,
-        manhwaName: userManhwa.manhwaName,
-        coverImage: userManhwa.coverImage,
+        manhwaName: userManhwa.manhwaname,
+        coverImage: userManhwa.coverimage,
         providerId: userManhwa.providerId,
         providerName: userManhwa.providerName ?? null,
         lastEpisodeReleased: lastEpisodeReleasedAllProviders,
         lastEpisodeReleasedAllProviders,
         manhwaUrlProvider: manhwaProvider?.url ?? null,
         statusReading: userManhwa.status,
-        statusManhwa: userManhwa.statusManhwa,
+        statusManhwa: userManhwa.statusmanhwa,
+        alternativeNames: userManhwa.alternativenames,
         lastEpisodeRead: userManhwa.lastEpisodeRead,
         lastNotifiedEpisode: userManhwa.lastNotifiedEpisode,
         isTelegramNotificationEnabled: userNotification?.isEnabled ?? false,
@@ -161,16 +178,16 @@ export class PrismaUserManhwaRepository implements UserManhwaRepository {
     const whereConditions: string[] = [`"userId" = ${userId}`]
 
     if (status) {
-      whereConditions.push(`"manhwa"."status" = '${status}'`)
+      whereConditions.push(`"Manhwas"."status" = '${status}'`)
     }
 
     if (userStatus) {
-      whereConditions.push(`"status" = '${userStatus}'`)
+      whereConditions.push(`"UserManhwa"."status" = '${userStatus}'`)
     }
 
     if (manhwaName) {
       whereConditions.push(
-        `("manhwa"."name" ILIKE '%${manhwaName}%' OR EXISTS(SELECT 1 FROM jsonb_array_elements_text("manhwa"."alternativeNames") AS elem WHERE elem ILIKE '%${manhwaName}%'))`,
+        `("Manhwas"."name" ILIKE '%${manhwaName}%' OR EXISTS(SELECT 1 FROM jsonb_array_elements_text("Manhwas"."alternativeNames") AS elem WHERE elem ILIKE '%${manhwaName}%'))`,
       )
     }
 
