@@ -7,7 +7,7 @@ interface RawUserManhwaQueryResult extends UserManhwa {
   manhwaname: string | null
   coverimage: string | null
   statusmanhwa: 'ONGOING' | 'COMPLETED' | 'HIATUS' | null
-  providerName: string | null
+  providername: string | null
   alternativenames: string | null
 }
 
@@ -137,7 +137,7 @@ export class PrismaUserManhwaRepository implements UserManhwaRepository {
         manhwaName: userManhwa.manhwaname,
         coverImage: userManhwa.coverimage,
         providerId: userManhwa.providerId,
-        providerName: userManhwa.providerName ?? null,
+        providerName: userManhwa.providername ?? null,
         lastEpisodeReleased: lastEpisodeReleasedAllProviders,
         lastEpisodeReleasedAllProviders,
         manhwaUrlProvider: manhwaProvider?.url ?? null,
