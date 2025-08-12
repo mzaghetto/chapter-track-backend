@@ -25,7 +25,7 @@ export async function authenticate(
       },
       {
         sub: user.id.toString(),
-        expiresIn: '10m',
+        expiresIn: '15m',
       },
     )
 
@@ -35,7 +35,7 @@ export async function authenticate(
       },
       {
         sub: user.id.toString(),
-        expiresIn: '30m',
+        expiresIn: '7d',
       },
     )
 

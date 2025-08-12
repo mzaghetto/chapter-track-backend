@@ -22,7 +22,7 @@ export async function googleSSO(request: FastifyRequest, reply: FastifyReply) {
       },
       {
         sub: user.id.toString(),
-        expiresIn: '10m',
+        expiresIn: '15m',
       },
     )
 
