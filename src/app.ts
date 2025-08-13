@@ -31,7 +31,12 @@ app.register(fastifyJwt, {
   },
 })
 
-app.register(fastifyCookie)
+app.register(fastifyCookie, {
+  parseOptions: {
+    secure: true,
+    sameSite: 'none',
+  },
+})
 app.register(bigintSerializer)
 app.register(usersRoutes)
 app.register(manhwaRoutes)
