@@ -29,7 +29,7 @@ export async function refresh(request: FastifyRequest, reply: FastifyReply) {
     .setCookie('refreshToken', refreshToken, {
       path: '/',
       secure: true,
-      sameSite: true,
+      sameSite: 'none',
       httpOnly: true,
     })
     .status(200)
