@@ -13,9 +13,9 @@ COPY . .
 
 RUN npm run build
 
-FROM node:18-alpine AS production
+FROM node:18-bookworm-slim AS production
 
-RUN apk add --no-cache openssl1.1-compat
+RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
