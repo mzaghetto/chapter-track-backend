@@ -3,6 +3,7 @@ import z from 'zod'
 import { makeGoogleSSOUseCase } from '@/use-cases/factories/make-google-sso-use-case'
 import { InvalidGoogleTokenError } from '@/use-cases/errors/invalid-google-token-error'
 import { UnverifiedGoogleEmailError } from '@/use-cases/errors/unverified-google-email-error'
+import { refreshTokenCookieOptions } from '@/http/utils/refresh-token-cookie-options'
 
 export async function googleSSO(request: FastifyRequest, reply: FastifyReply) {
   const googleSSOBodySchema = z.object({
@@ -37,12 +38,7 @@ export async function googleSSO(request: FastifyRequest, reply: FastifyReply) {
     )
 
     return reply
-      .setCookie('refreshToken', refreshToken, {
-        path: '/',
-        secure: true,
-        sameSite: 'none',
-        httpOnly: true,
-      })
+      .setCookie('refreshToken', refreshToken, refreshTokenCookieOptions)
       .status(200)
       .send({ token: authToken })
   } catch (error) {
